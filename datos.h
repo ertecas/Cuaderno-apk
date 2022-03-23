@@ -3,7 +3,7 @@
 
 //Definicion de los tipos de registros para cada fichero
 
-typedef struct {
+typedef struct { //Estructura para usuarios.txt
 	char Id_usuario[4];      //3 digitos
 	char Nomb_usuario[21];
 	char Perfil_usuario[15];
@@ -11,7 +11,7 @@ typedef struct {
 	char Contrasena[9];
 }usuarios;
 
-typedef struct {
+typedef struct { //Estructura para alumnos.txt
 	char Id_alum[7];      //6 digitos
 	char Nombre_alum[21];
 	char Direc_alum[31];
@@ -20,13 +20,13 @@ typedef struct {
 	char Grupo[11];
 }alumnos;
 
-typedef struct {
+typedef struct {  //Estructura para materias.txt
 	char Id_materias[5];   //4 digitos
 	char Nombre_materia[51];
 	char Abrev_materia[4];
 }materias;
 
-typedef struct {
+typedef struct {  //Estructura para matriculas.txt
 	char Id_materias[5];  //4 digitos
 	char Id_alum[7];      //6 digitos
 }matriculas;
@@ -37,7 +37,7 @@ typedef struct {
 	int año;
 }fecha;
 
-typedef struct {
+typedef struct {  //Estructura para calificaciones.txt
 	fecha Fecha_calif;   //Formato fecha
 	char Descrip_calif[31];
 	char Id_materia[5];     //4 digitos, debe coincidir con materias.txt
@@ -45,7 +45,7 @@ typedef struct {
 	int Valor_calif;    //Entre 0 y 10
 }calificaciones;
 
-typedef struct {
+typedef struct {  //Estructura para horarios.txt
 	char Id_profesor[4];   //3 digitos, debe coincidir con usuarios.txt
 	int Dia_clase;     //De 1 a 5
 	int Hora_clase;    //De 1 a 6
@@ -53,10 +53,13 @@ typedef struct {
 	char Grupo[11];    //Debe coincidir con alumnos.txt
 }horarios;
 
-
-//Precondición: Los registros deben estar inicializados
-//Postcondición: Permite modificar los datos de los registros
-void modifica_datos ();
+//Se declaran los vectores de forma global para ser usados por los distintos módulos
+usuarios *v_usuarios;
+alumnos *v_alumnos;
+materias *v_materias;
+matriculas *v_matriculas;
+calificaciones *v_calificaciones;
+horarios *v_horarios;
 
 #endif
 
