@@ -18,12 +18,12 @@ void perfil (tipo,i_usuario) { //Tipo recibe 1 o 0 | i_usuario es el indice del 
 	}
 }
 
-void menu_admin (i) {
+void menu_profe (i) {
 	
 	int n, op;
 	
 	printf("Bienvenido %s ", v_usuarios[i].Nomb_usuario);
-	printf("\nHas accedido como: ADMINISTRADOR");
+	printf("\nHas accedido como: PROFESOR");
 	
 	MENU:
 		
