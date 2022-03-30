@@ -49,7 +49,6 @@ void menu_admin (i) {
 				
 				do {
 		
-					printf("Elija una opcion\n");
 					printf("\t1.Agregar usuarios\n");
 					printf("\t2.Eliminar usuarios\n");
 					printf("\t3.Modificar usuarios\n");
@@ -64,15 +63,15 @@ void menu_admin (i) {
 							goto MENU; //goto salta a la linea marcada por la etiqueta
 							
 						case 1:	
-							agregar_usuarios ();
+							agregar_usuarios (&nUsuarios);
 							goto USUARIOS;
 						
 						case 2:
-							eliminar_usuarios ();
+							eliminar_usuarios (&nUsuarios);
 							goto USUARIOS;
 							
 						case 3:	
-							modificar_usuarios ();
+							modificar_usuarios (nUsuarios);
 							goto USUARIOS;
 						
 						case 4:
@@ -90,7 +89,6 @@ void menu_admin (i) {
 					
 				do {
 	
-					printf("Elija una opcion\n");
 					printf("\t1.Agregar alumnos\n");
 					printf("\t2.Eliminar alumnos\n");
 					printf("\t3.Modificar alumnos\n");
@@ -105,15 +103,15 @@ void menu_admin (i) {
 							goto MENU; //goto salta a la linea marcada por la etiqueta
 							
 						case 1:	
-							agregar_alumnos ();
+							agregar_alumnos (&nAlumnos);
 							goto ALUMNOS;
 						
 						case 2:
-							eliminar_alumnos ();
+							eliminar_alumnos (&nAlumnos);
 							goto ALUMNOS;
 								
 						case 3:	
-							modificar_alumnos ();
+							modificar_alumnos (nAlumnos);
 							goto ALUMNOS;
 						
 						case 4:
@@ -130,11 +128,10 @@ void menu_admin (i) {
 				printf("\n\nMATERIAS\n\n");
 				do {
 	
-					printf("Elija una opcion\n");
-					printf("\t1.Agregar alumnos\n");
-					printf("\t2.Eliminar alumnos\n");
-					printf("\t3.Modificar alumnos\n");
-					printf("\t4.Listar alumnos\n");		
+					printf("\t1.Agregar materias\n");
+					printf("\t2.Eliminar materias\n");
+					printf("\t3.Modificar materias\n");
+					printf("\t4.Listar materias\n");		
 					printf("\t0.Volver al menu de administrador\n");
 				
 					scanf("%d", &op);
@@ -145,19 +142,19 @@ void menu_admin (i) {
 							goto MENU; //goto salta a la linea marcada por la etiqueta
 							
 						case 1:	
-							agregar_materias ();
+							agregar_materias (&nMaterias);
 							goto MATERIAS;
 						
 						case 2:
-							agregar_materias ();
+							eliminar_materias (&nMaterias);
 							goto MATERIAS;
 								
 						case 3:	
-							agregar_materias ();
+							modificar_materias (nMaterias);
 							goto MATERIAS;
 						
 						case 4:
-							agregar_materias (nMaterias);
+							listar_materias (nMaterias);
 							goto MATERIAS;
 					}
 					
@@ -166,99 +163,61 @@ void menu_admin (i) {
 				break;
 				
 			case 4:
-				printf("");
+				HORARIOS:
+				printf("\n\nHORARIOS\n\n");
+				do {
+	
+					printf("\t1.Agregar hora a un profesor\n");
+					printf("\t2.Eliminar hora de un profesor\n");
+					printf("\t3.Modificar hora de un profesor\n");
+					printf("\t4.Listar horario de un profesor\n");		
+					printf("\t0.Volver al menu de administrador\n");
+				
+					scanf("%d", &op);
+					
+					switch (op) {
+						
+						case 0:
+							goto MENU; //goto salta a la linea marcada por la etiqueta
+							
+						case 1:	
+							agregar_horarios (&nHorarios);
+							goto HORARIOS;
+						
+						case 2:
+							eliminar_horarios (&nHorarios);
+							goto HORARIOS;
+								
+						case 3:	
+							modificar_horarios (nUsuarios,nHorarios);
+							goto HORARIOS;
+						
+						case 4:
+							listar_horarios (nUsuarios,nHorarios);
+							goto HORARIOS;
+					}
+					
+				}while((n!=0)&&(n!=1)&&(n!=2)&&(n!=3)&&(n!=4));
+				
 				break;
 				
 			case 5:
-				exit(1);		
+				break;		
 		}
 		
 	}while((n!=1)&&(n!=2)&&(n!=3)&&(n!=4)&&(n!=5));
-	
-			
+				
 }
 
-
-void listar_usuarios (int N) {  //N es el número total de usuarios (tamaño de vectores)
+void menu_profe (i) {
 	
-	int i;
-	printf("\n\nLISTA USUARIOS\n\n");
-	printf("ID-NOMBRE-PERFIL-USUARIO-CONTRASENA");
+	int n, op;
 	
-	for (i=0;i<N;i++) {
-		printf("%s-%s-%s-%s-%s",v_usuarios[i].Id_usuario,v_usuarios[i].Nomb_usuario,v_usuarios[i].Perfil_usuario,v_usuarios[i].Usuario,v_usuarios[i].Contrasena);
-	}
+	printf("Bienvenido %s ", v_usuarios[i].Nomb_usuario);
+	printf("\nHas accedido como: PROFESOR");
+	
+				
 }
-
-void modificar_usuarios (int N) {
-	
-	
-}
-
-void agregar_usuarios () {
-	
-} 
-
-void eliminar_usuarios () {
-	
-}
-
-void listar_alumnos (int N) {  //N es el número total de alumnos (tamaño de vectores)
-	
-	int i;
-	printf("\n\nLISTA ALUMNOS\n\n");
-	printf("ID-NOMBRE-DIRECCION-LOCALIDAD-CURSO-GRUPO");
-	
-	for (i=0;i<N;i++) {
-		printf("%s-%s-%s-%s-%s-%s",v_alumnos[i].Id_alum,v_alumnos[i].Nombre_alum,v_alumnos[i].Direc_alum,v_alumnos[i].Local_alum,v_alumnos[i].Curso,v_alumnos[i].Grupo);
-	}
-}
-
-void modificar_materias () {
-	
-}
-
-void agregar_materias () {
-	
-}
-
-void eliminar_materias () {
-	
-}
-
-void listar_materias (int N) {
-	
-	int i;
-	printf("\n\nLISTA MATERIAS\n\n");
-	printf("ID-NOMBRE-ABREVIATURA");
-	
-	for (i=0;i<N;i++) {
-		printf("%s-%s-%s-",v_materias[i].Id_materias,v_materias[i].Nombre_materia,v_materias[i].Abrev_materia);
-	}	
-}
-
-void modificar_materias () {
-	
-}
-
-void agregar_materias () {
-	
-}
-
-void eliminar_materias () {
-	
-}
-
-
-
-
-
-
-
-
-
-
-
 
 
 
