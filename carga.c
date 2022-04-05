@@ -1,5 +1,5 @@
 //Este módulo se encarga de cargar los datos guardados en los registros y los ejecuta para poder acceder a ellos o modificarlos/
-#include <carga.h>
+#include "carga.h"
 
 int carga(){
     cargaUsuarios(&v_usuarios,&numUsuarios);
@@ -12,7 +12,7 @@ int carga(){
     return (0);
 }
 
-int cargaUsuarios(usuario **v_usuarios,int *n){
+int cargaUsuarios(usuarios **v_usuarios,int *n){
     FILE *fichero;
 
     char linea[54];
@@ -44,7 +44,7 @@ int cargaUsuarios(usuario **v_usuarios,int *n){
                 strcpy((*v_usuarios)[*n].Usuario,token);
 
                 token=strtok(NULL,"\n");
-                strcpy((*v_usuarios)[*n].Contraseña,token);
+                strcpy((*v_usuarios)[*n].Contrasena,token);
 
                 (*n)++;
             }
@@ -122,7 +122,7 @@ int cargaMaterias(materias **v_materias,int *n){
                 *v_materias=realloc((materias *)(*v_materias),((*n)+1)*sizeof(materias));
 
                 token=strtok(linea,"-");
-                strcpy((*v_materias)[*n].Id_materia,token);
+                strcpy((*v_materias)[*n].Id_materias,token);
 
                 token=strtok(NULL,"-");
                 strcpy((*v_materias)[*n].Nombre_materia,token);
@@ -149,7 +149,7 @@ int cargaMatriculas(matriculas **v_matriculas,int *n){
 
     fichero=fopen("DATA/matriculas.txt","r");
 
-    if(fichero==FILE){
+    if(fichero==NULL){
         printf("\nHa ocurrido un error al abrir el fichero DATA/matriculas.txt, compruebe que los datos son correctos.");
     }else{
         do{
@@ -159,7 +159,7 @@ int cargaMatriculas(matriculas **v_matriculas,int *n){
                 *v_matriculas=realloc((matriculas *)(*v_matriculas),((*n)+1)*sizeof(matriculas));
 
                 token=strtok(linea,"-");
-                strcpy((*v_matriculas)[*n].Id_materia,token);
+                strcpy((*v_matriculas)[*n].Id_materias,token);
 
                 token=strtok(NULL,"\n");
                 strcpy((*v_matriculas)[*n].Id_alum,token);
@@ -183,7 +183,7 @@ int cargaCalificaciones(calificaciones **v_calificaciones,int *n){
 
     fichero=fopen("DATA/calificaciones.txt","r");
 
-    if(fichero==FILE){
+    if(fichero==NULL){
         printf("\nHa ocurrido un error al abrir el fichero DATA/calificaciones.txt, compruebe que los datos son correctos.");
     }else{
         do{

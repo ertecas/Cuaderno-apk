@@ -1,9 +1,6 @@
 #ifndef _CARGA_H_
 #define _CARGA_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "datos.h"
 
 //En primer lugar, hacemos una lista declarando los tipos de datos que usaremos//
