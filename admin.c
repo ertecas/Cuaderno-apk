@@ -624,7 +624,52 @@ void modificar_matricula (int i_alumno, int nMatriculas) {
 	
 }
 
-void eliminar_matricula (int i_alumno, int *nMatriculas) {
+void eliminar_matricula (int i_alumno, int *nMatriculas, int nAlumnos) {
+	
+	int i, res;
+	char materia[5];
+	
+	SEGUIR:
+		
+	printf("Introduzca el id (4 digitos) de la materia de la que quiere desmatricular al alumno: ");
+	fflush(stdin);
+	fgets(materia, 5, stdin);
+	
+	if (i=0;i<nMatriculas;i++) {
+		
+		if ((materia==v_matriculas[i].Id_materias)&&(v_matriculas[i].Id_alum==v_alumnos[i_alumno].Id_alum)) {
+			break;
+		}
+	}
+	
+	if (i==nMatriculas) {
+		printf("ERROR: Matricula no encontrada\n");
+		printf("¿Desea volver a introducirla? (1.Seguir)");
+		scanf("%d", &res);
+		
+		if (res==1) {
+			goto SEGUIR;
+		}else{
+			goto FIN;
+		}
+	}
+	
+	printf("¿Desea realizar la desmatriculacion? (1.Confirmar)\n");
+	scanf("%d", &res);
+	
+	if (res==1) {
+		
+		for (i=i;i<(nMatriculas-1);i++) {
+		
+			v_matriculas[i].Id_alum=v_matriculas[i+1].Id_alum;
+			v_matriculas[i].Id_materias=v_matriculas[i+1].Id_materias;
+		}
+		
+		*nMatriculas= *nMatriculas-1;
+	}	
+	
+	FIN:
+		
 	
 }
 
@@ -1265,8 +1310,82 @@ void agregar_horarios (int *nHorarios, int nUsuarios, int nMaterias, int nAlumno
 	FIN:
 }
 
-void eliminar_horarios (int *nHorarios) {
+void eliminar_horarios (int *nHorarios, int nUsuarios) {
 	
+	int i, res;
+	char id[4];
+	char grupo[11];
+	
+	ID:
+		
+	printf("Introduzca id (3 digitos) del profesor al que desea crear horario: ");
+	fflus(stdin),
+	fgets(id, 4, stdin);
+	
+	for (i=0;i<nUsuarios;i++) {
+		
+		if ((id==v_usuarios[i].Id_usuario)&&(v_usuarios[i].Perfil_usuario=='profesor')) {
+			break;
+		}
+	}
+	
+	if (i==nUsuarios) {
+		printf("\nERROR: El ID del profesor no existe\n");
+		printf("¿Desea intentarlo de nuevo? (1.Seguir)\n");
+		scanf("%d", &res);
+		
+		if (res==1) {
+			goto ID
+		} else {
+			goto FIN;
+		}
+	}
+	
+	GRUPO:
+		
+	printf("Introduzca el grupo (10 caracteres) que va a eliminar del horario\n");
+	fflus(stdin);
+	fgets(grupo, 11, stdin);
+	
+	for (i=0;i<nHorarios;i++) {  //Comprueba si el grupo existe
+		
+		if ((grupo==v_horarios[i].Grupo)&&(v_horarios[i].Id_profesor==id)) {
+			break;
+		}
+	}
+	
+	if (i==nHorarios) {
+		
+		printf("ERROR: El grupo no existe o no pertenece al profesor\n");
+		printf("¿Desea volver a introducirlo?\n (1.Seguir)");
+		scanf("%d", &res);
+		
+		if (res==1) {
+			goto GRUPO;
+		}else{
+			goto FIN;
+		}
+	}	
+	
+	printf("¿Desea eliminar el horario del profesor? (1.Confirmar)\n");
+	scanf("%d", &res);
+	
+	if (res==1) {
+		
+		for (i=i;i<(nHorarios-1);i++) {
+		
+			v_horarios[i].Id_profesor=v_horarios[i+1].Id_profesor;
+			v_horarios[i].Id_materia=v_horarios[i+1].Id_materia;
+			v_horarios[i].Grupo=v_horarios[i+1].Grupo;
+			v_horarios[i].Dia_clase=v_horarios[i+1].Dia_clase;
+			v_horarios[i].Hora_clase=v_horarios[i+1].Hora_clase;
+
+		}
+		
+		*nHorarios= *nHorarios-1;
+	}	
+	
+	FIN:			
 	
 }
 

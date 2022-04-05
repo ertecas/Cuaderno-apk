@@ -31,14 +31,8 @@ typedef struct {  //Estructura para matriculas.txt
 	char Id_alum[7];      //6 digitos
 }matriculas;
 
-typedef struct {
-	int dia;
-	int mes;
-	int año;
-}fecha;
-
 typedef struct {  //Estructura para calificaciones.txt
-	fecha Fecha_calif;   //Formato fecha
+	char Fecha_calif;   //Formato fecha xx/yy/zzzz
 	char Descrip_calif[31];
 	char Id_materia[5];     //4 digitos, debe coincidir con materias.txt
 	char Id_alum[7];        //6 digitos, debe coincidir con alumnos.txt
