@@ -218,6 +218,53 @@ void agregar_usuarios (int *nUsuarios) {
 
 void eliminar_usuarios (int *nUsuarios) {
 	
+	int i, res;
+	char id[4];
+	
+	SEGUIR:
+		
+	printf("Introduzca el id (3 digitos) del usuario a eliminar: ");
+	fflush(stdin);
+	fgets(id, 4, stdin);
+	
+	if (i=0;i<nUsuarios;i++) {
+		
+		if (id==v_usuarios[i].Id_usuario) {
+			break;
+		}
+	}
+	
+	if (i==nUsuarios) {
+		printf("ERROR: ID de usuario no encontrado\n");
+		printf("¿Desea volver a introducirlo? (1.Seguir)");
+		scanf("%d", &res);
+		
+		if (res==1) {
+			goto SEGUIR;
+		}else{
+			goto FIN;
+		}
+	}
+	
+	printf("¿Desea eliminar el usuario? (1.Confirmar)\n");
+	scanf("%d", &res);
+	
+	if (res==1) {
+		
+		for (i=i;i<(nUsuarios-1);i++) {
+		
+			v_usuarios[i].Id_usuario=v_usuarios[i+1].Id_usuario;
+			v_usuarios[i].Nomb_usuario=v_usuarios[i+1].Nomb_usuario;
+			v_usuarios[i].Perfil_usuario=v_usuarios[i+1].Perfil_usuario;
+			v_usuarios[i].Usuario=v_usuarios[i+1].Usuario;
+			v_usuarios[i].Contrasena=v_usuarios[i+1].Contrasena;
+		}
+		
+		*nUsuarios= *nUsuarios-1;
+	}	
+	
+	FIN:
+	
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -446,6 +493,55 @@ void agregar_alumnos (int *nAlumnos) {
 }
 
 void eliminar_alumnos (int *nAlumnos) {
+		
+	int i, res;
+	char id[7];
+	
+	SEGUIR:
+		
+	printf("Introduzca el id (6 digitos) del alumno a eliminar: ");
+	fflush(stdin);
+	fgets(id, 7, stdin);
+	
+	if (i=0;i<nAlumnos;i++) {
+		
+		if (id==v_alumnos[i].Id_alum) {
+			break;
+		}
+	}
+	
+	if (i==nAlumnos) {
+		printf("ERROR: ID de alumno no encontrado\n");
+		printf("¿Desea volver a introducirlo? (1.Seguir)");
+		scanf("%d", &res);
+		
+		if (res==1) {
+			goto SEGUIR;
+		}else{
+			goto FIN;
+		}
+	}
+	
+	printf("¿Desea eliminar el alumno? (1.Confirmar)\n");
+	scanf("%d", &res);
+	
+	if (res==1) {
+		
+		for (i=i;i<(nAlumnos-1);i++) {
+		
+			v_alumnos[i].Id_alum=v_alumnos[i+1].Id_alum;
+			v_alumnos[i].Nombre_alum=v_alumnos[i+1].Nombre_alum;
+			v_alumnos[i].Direc_alum=v_alumnos[i+1].Direc_alum;
+			v_alumnos[i].Local_alum=v_alumnos[i+1].Local_alum;
+			v_alumnos[i].Curso=v_alumnos[i+1].Curso;
+			v_alumnos[i].Grupo=v_alumnos[i+1].Grupo;
+			
+		}
+		
+		*nAlumnos= *nAlumnos-1;
+	}	
+	
+	FIN:	
 	
 }
 
@@ -749,6 +845,52 @@ void agregar_materias (int *nMaterias) {
 
 void eliminar_materias (int *nMaterias) {
 	
+	int i, res;
+	char id[5];
+	
+	SEGUIR:
+		
+	printf("Introduzca el id (4 digitos) de la materia a eliminar: ");
+	fflush(stdin);
+	fgets(id, 5, stdin);
+	
+	if (i=0;i<nMaterias;i++) {
+		
+		if (id==v_materias[i].Id_materias) {
+			break;
+		}
+	}
+	
+	if (i==nMaterias) {
+		printf("ERROR: ID de materia no encontrado\n");
+		printf("¿Desea volver a introducirlo? (1.Seguir)");
+		scanf("%d", &res);
+		
+		if (res==1) {
+			goto SEGUIR;
+		}else{
+			goto FIN;
+		}
+	}
+	
+	printf("¿Desea eliminar la materia? (1.Confirmar)\n");
+	scanf("%d", &res);
+	
+	if (res==1) {
+		
+		for (i=i;i<(nMaterias-1);i++) {
+		
+			v_materias[i].Id_materias=v_materias[i+1].Id_materias;
+			v_materias[i].Nombre_materia=v_materias[i+1].Nombre_materia;
+			v_materias[i].Abrev_materia=v_materias[i+1].Abrev_materia;
+			
+		}
+		
+		*nMaterias= *nMaterias-1;
+	}	
+	
+	FIN:		
+	
 }
 
 void listar_materias (int nMaterias) {
@@ -989,8 +1131,138 @@ int auxiliar_horarios (char id[4], int nHorarios, int *q) {
 	return(0);
 }
 
-void agregar_horarios (int *nHorarios) {
+void agregar_horarios (int *nHorarios, int nUsuarios, int nMaterias, int nAlumnos) {
 	
+	int i, res, dia, hora;
+	char id[4];
+	char materia[5];
+	char grupo[11];
+	
+	ID:
+		
+	printf("Introduzca id (3 digitos) del profesor al que desea crear horario: ");
+	fflus(stdin),
+	fgets(id, 4, stdin);
+	
+	for (i=0;i<nUsuarios;i++) {
+		
+		if ((id==v_usuarios[i].Id_usuario)&&(v_usuarios[i].Perfil_usuario=='profesor')) {
+			break;
+		}
+	}
+	
+	if (i==nUsuarios) {
+		printf("\nERROR: El ID del profesor no existe\n");
+		printf("¿Desea intentarlo de nuevo? (1.Seguir)\n");
+		scanf("%d", &res);
+		
+		if (res==1) {
+			goto ID
+		} else {
+			goto FIN;
+		}
+	}
+	
+	CLASE:
+		
+	do {
+		
+		printf("Introduzca el dia (1-5) que tiene clase: ");
+		scanf("%d", &dia);
+		
+	}while((dia!=1)&&(dia!=2)&&(dia!=3)&&(dia!=4)&&(dia!=5));
+
+	do {
+		
+		printf("Introduzca la hora (1-6) a la que tiene clase: ");
+		scanf("%d", &hora);
+		
+	}while((hora!=1)&&(hora!=2)&&(hora!=3)&&(hora!=4)&&(hora!=5)&&(hora!=6));
+	
+	for (i=0;i<nHorarios;i++) { //Comprueba si ya tiene una clase el mismo dia y hora
+		
+		if ((dia==v_horarios[i].Dia_clase)&&(hora==v_horarios[i].Hora_clase)) {
+			printf("ERROR: Ya tiene una clase a esa hora el mismo dia\n");
+			printf("¿Desea volver a introducir hora? (1.Seguir)\n");
+			scanf("%d", &res);
+			
+			if (res==1) {
+				goto CLASE;
+			} else {
+				goto FIN;
+			}
+		}
+	}	
+	
+	MATERIA:
+		
+	printf("Introduzca el id (4 digitos) de la materia a la que va a dar clase: ");
+	fflush(stdin);
+	fgets(materia, 5, stdin);
+	
+	for (i=0;i<nMaterias;i++) {  //Comprueba si la materia existe
+		
+		if (materia==v_materias[i].Id_materias) {
+			break;
+		}
+	}
+	
+	if (i==nMaterias) {
+		
+		printf("\nERROR: El ID de la materia no existe\n");
+		printf("¿Desea intentarlo de nuevo? (1.Seguir)\n");
+		scanf("%d", &res);
+		
+		if (res==1) {
+			goto MATERIA;
+		} else {
+			goto FIN;
+		}		
+	}
+	GRUPO:
+		
+	printf("Introduzca grupo (10 caracteres) al que va a dar clase\n");
+	fflus(stdin);
+	fgets(grupo, 11, stdin);
+	
+	for (i=0;i<nAlumnos;i++) {  //Comprueba si el grupo existe
+		
+		if (grupo==v_alumnos[i].Grupo) {
+			break;
+		}
+	}
+	
+	if (i==nAlumnos) {
+		
+		printf("ERROR: El grupo no existe\n");
+		printf("¿Desea volver a introducirlo?\n (1.Seguir)");
+		scanf("%d", &res);
+		
+		if (res==1) {
+			goto GRUPO;
+		}else{
+			goto FIN;
+		}
+	}	
+	
+	printf("¿Desea crear el horarios? (1.Confirmar)\n");
+	scanf("%d", &res);
+	
+	if (res==1) {
+		
+		v_horarios= (horarios*) realloc(v_horarios,(nHorarios+1)*sizeof(horarios));
+		
+		*nHorarios = *nHorarios+1;
+		
+		v_horarios[nHorarios-1].Id_profesor=id;
+		v_horarios[nHorarios-1].Dia_clase=dis;
+		v_horarios[nHorarios-1].Hora_clase=hora;
+		v_horarios[nHorarios-1].Id_materia=materia;
+		v_horarios[nHorarios-1].Grupo=grupo;
+		
+	}	
+	
+	FIN:
 }
 
 void eliminar_horarios (int *nHorarios) {
