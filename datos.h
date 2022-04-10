@@ -32,7 +32,7 @@ typedef struct {  //Estructura para matriculas.txt
 }matriculas;
 
 typedef struct {  //Estructura para calificaciones.txt
-	char Fecha_calif;   //Formato fecha xx/yy/zzzz
+	char Fecha_calif[11];   //Formato fecha xx/yy/zzzz
 	char Descrip_calif[31];
 	char Id_materia[5];     //4 digitos, debe coincidir con materias.txt
 	char Id_alum[7];        //6 digitos, debe coincidir con alumnos.txt
@@ -56,17 +56,3 @@ calificaciones *v_calificaciones;
 horarios *v_horarios;
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-

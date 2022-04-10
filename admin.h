@@ -14,7 +14,7 @@ void eliminar_alumnos (int *nAlumnos);
 
 void materias_matriculado (int i_alumno, int nMatriculas, int nMaterias);
 void modificar_matricula (int i_alumno, int nMatriculas);
-void eliminar_matricula (int i_alumno, int *nMatriculas, int nAlumnos);
+void eliminar_matricula (int i_alumno, int *nMatriculas);
 void agregar_matricula (int i_alumno, int nMaterias, int *nMatriculas);
 
 
@@ -29,6 +29,5 @@ void modificar_horarios (int nUsuarios, int nHorarios);
 int auxiliar_horarios (char [], int nHorarios, int *q);
 void agregar_horarios (int *nHorarios, int nUsuarios, int nMaterias, int nAlumnos);
 void eliminar_horarios (int *nHorarios, int nUsuarios);
-
 
 #endif

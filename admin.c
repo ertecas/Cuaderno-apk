@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "carga.h"
 #include "datos.h"
@@ -9,16 +10,16 @@ void listar_usuarios (int nUsuarios) {
 
 	int i;
 	printf("\n\nLISTA USUARIOS\n\n");
-	printf("ID-NOMBRE-PERFIL-USUARIO-CONTRASENA");
+	printf("ID-NOMBRE-PERFIL-USUARIO-CONTRASENA\n");
 	
 	for (i=0;i<nUsuarios;i++) {
-		printf("%s-%s-%s-%s-%s",v_usuarios[i].Id_usuario,v_usuarios[i].Nomb_usuario,v_usuarios[i].Perfil_usuario,v_usuarios[i].Usuario,v_usuarios[i].Contrasena);
+		printf("%s-%s-%s-%s-%s\n",v_usuarios[i].Id_usuario,v_usuarios[i].Nomb_usuario,v_usuarios[i].Perfil_usuario,v_usuarios[i].Usuario,v_usuarios[i].Contrasena);
 	}
 }
 
 void modificar_usuarios (int nUsuarios) {
 	
-	int i, op;
+	int i, op, res;
 	char login[6];
 	char cambio[21];
 	
@@ -30,27 +31,29 @@ void modificar_usuarios (int nUsuarios) {
 		
 		for (i=0;i<nUsuarios;i++) {
 			
-			if (login==v_usuarios[i].Usuario) {
-				
-				goto MODIFICA;
+			if (strcmp(login,v_usuarios[i].Usuario)==0) {
+				break;
 			}
 			
 		}
 		
-		printf("\nERROR: No se ha encontrado usuario");
+		if (i==nUsuarios) {
+			
+			printf("\nERROR: No se ha encontrado usuario");
+			printf("\n¿Desea volver a intentarlo? (1.Seguir)");
+			scanf("%d", &res);
 		
-		printf("¿Desea continuar? (Pulse 1 para seguir)");
-		scanf("%d", &res);
-		
-		if (res!=1) {
-			goto FIN;
+			if (res!=1) {
+				return;
+			}
 		}
 		
-	}while(v_usuarios[i].Usuario!=login);
-	
-	MODIFICA:
 		
-		printf("ID-NOMBRE-PERFIL-USUARIO-CONTRASENA\n");
+	}while(i==nUsuarios);
+		
+	do {
+		
+		printf("\nID-NOMBRE-PERFIL-USUARIO-CONTRASENA\n");
 		printf("%s-%s-%s-%s-%s",v_usuarios[i].Id_usuario,v_usuarios[i].Nomb_usuario,v_usuarios[i].Perfil_usuario,v_usuarios[i].Usuario,v_usuarios[i].Contrasena);
 
 		printf("\t1.ID\n");
@@ -59,75 +62,66 @@ void modificar_usuarios (int nUsuarios) {
 		printf("\t4.USUARIO\n");
 		printf("\t5.CONTRASENA\n");
 		printf("\t0.Volver a menu usuario\n");
-		
-		do {
 	
-			scanf("%d", &op);
+		scanf("%d", &op);
 					
-			switch (op) {
+		switch (op) {
 						
-				case 0:
-					break;
-							
-				case 1:	
-					
-					printf("Introduzca nuevo ID: ");
-					fflush(stdin);
-					fgets(cambio, 4, stdin);
-					v_usuarios[i].Id_usuario=cambio;
-					
-					goto MODIFICA;
+			case 0:
+				break;
 						
-				case 2:
-					printf("Introduzca nuevo nombre: ");
-					fflush(stdin);
-					fgets(cambio, 21, stdin);
-					v_usuarios[i].Nomb_usuario=cambio;
+			case 1:	
 					
-					goto MODIFICA;
+				printf("\nIntroduzca nuevo ID: ");
+				fflush(stdin);
+				fgets(cambio, 4, stdin);
+				strcpy(v_usuarios[i].Id_usuario,cambio);
+				break;
+						
+			case 2:
+				printf("\nIntroduzca nuevo nombre: ");
+				fflush(stdin);
+				fgets(cambio, 21, stdin);
+				strcpy(v_usuarios[i].Nomb_usuario,cambio);
+				break;
 								
-				case 3:	
-					if (v_usuarios[i].Perfil_usuario=='administrador') {
+			case 3:	
+				if (strcmp(v_usuarios[i].Perfil_usuario,'administrador')==0) {
 						
-						printf("¿Desea cambiar el perfil a profesor? (Pulse 1 para confirmar)");
-						scanf("%d", &res);
+					printf("\n¿Desea cambiar el perfil a profesor? (1.Confirmar)\n");
+					scanf("%d", &res);
 						
-						if (res==1) {
-							v_usuarios[i].Perfil_usuario='profesor';
-						}
-						
-					} else {
-						
-						printf("¿Desea cambiar el perfil a administrador? (Pulse 1 para confirmar)");
-						scanf("%d", &res);
-						
-						if (res==1) {
-							v_usuarios[i].Perfil_usuario='administrador';
-						}												
+					if (res==1) {
+						strcpy(v_usuarios[i].Perfil_usuario,'profesor');
 					}
-					
-					goto MODIFICA;
 						
-				case 4:
-					printf("Introduzca nuevo usuario (login): ");
-					fflush(stdin);
-					fgets(cambio, 6, stdin);
-					v_usuarios[i].Usuario=cambio;
+				} else {
+						
+					printf("\n¿Desea cambiar el perfil a administrador? (1.Confirmar)\n");
+					scanf("%d", &res);
+						
+					if (res==1) {
+						strcpy(v_usuarios[i].Perfil_usuario,'administrador');
+					}												
+				}
+								
+			case 4:
+				printf("\nIntroduzca nuevo usuario (login): ");
+				fflush(stdin);
+				fgets(cambio, 6, stdin);
+				strcpy(v_usuarios[i].Usuario,cambio);
+				break;
 					
-					goto MODIFICA;
+			case 5:
+				printf("\nIntroduzca nueva contrasena: ");
+				fflush(stdin);
+				fgets(cambio, 9, stdin);
+				strcpy(v_usuarios[i].Contrasena,cambio);
+				break;	
+		}
 					
-				case 5:
-					printf("Introduzca nueva contrasena: ");
-					fflush(stdin);
-					fgets(cambio, 9, stdin);
-					v_usuarios[i].Contrasena=cambio;
-										
-					goto MODIFICA;	
-			}
-					
-		}while((n!=0)&&(n!=1)&&(n!=2)&&(n!=3)&&(n!=4)&&(n!=5));
+	}while(op!=0);
 		
-		FIN:
 }
 
 void agregar_usuarios (int *nUsuarios) {
@@ -139,65 +133,90 @@ void agregar_usuarios (int *nUsuarios) {
 	char login[6];
 	char contrasena[9];
 	
-	ID:
-			
-	printf("Introduzca id (3 digitos) del usuario: ");
-	fflush(stdin);
-	fgets(id, 4, stdin);		
-			
-	for (i=0;i<nUsuarios;i++) {
+	do {
 		
-		if (v_usuarios[i].Id_usuario==id) {
-			printf("\nERROR: ID en uso\n");
-			goto ID;
+		printf("\nIntroduzca id (3 digitos) del usuario: ");
+		fflush(stdin);
+		fgets(id, 4, stdin);		
+			
+		for (i=0;i<nUsuarios;i++) {
+		
+			if (strcmp(v_usuarios[i].Id_usuario,id)==0) {
+				printf("\nERROR: ID en uso\n");
+				printf("¿Desea volver a intentarlo? (1.Seguir)\n");
+				scanf("%d", &res);
+				
+				if (res!=1) {
+					return;
+				}
+				
+				break;
+			}
 		}
-	}
 	
-	NOMBRE:
+	} while(strcmp(v_usuarios[i].Id_usuario,id)==0);
 			
-	printf("Introduzca nombre (20 caracteres) del usuario: ");
-	fflush(stdin);
-	fgets(nombre, 21, stdin);		
-			
-	for (i=0;i<nUsuarios;i++) {
+	do {
 		
-		if (v_usuarios[i].Nomb_usuario==nombre) {
-			printf("\nERROR: NOMBRE en uso\n");
-			goto NOMBRE;
-		}
-	}
+		printf("\nIntroduzca nombre (20 caracteres) del usuario: ");
+		fflush(stdin);
+		fgets(nombre, 21, stdin);		
 			
-	printf("\nIntroduzca perfil del usuario: ");		
-	printf("\tPulse 1 para administrador\n");
-	printf("\tPulse cualquier otro para profesor\n");
+		for (i=0;i<nUsuarios;i++) {
+		
+			if (strcmp(v_usuarios[i].Nomb_usuario,nombre)==0) {
+				printf("\nERROR: NOMBRE en uso\n");
+				printf("¿Desea volver a intentarlo? (1.Seguir)\n");
+				scanf("%d", &res);
+				
+				if (res!=1) {
+					return;
+				}
+				
+				break;
+			}
+		}
+	
+	} while(strcmp(v_usuarios[i].Nomb_usuario,nombre)==0);	
+			
+	printf("\nIntroduzca perfil del usuario (1.Administrador) (Otro.Profesor): ");
 	
 	scanf("%d", &res);
 	
 	if (res==1) {
-		perfil='administrador';
+		strcpy(perfil,'administrador');
 	} else {
-		perfil='profesor';
+		strcpy(perfil,'profesor');
 	}
 	
-	USUARIO:
-			
-	printf("Introduzca usuario (5 caracteres): ");
-	fflush(stdin);
-	fgets(usuario, 6, stdin);		
-			
-	for (i=0;i<nUsuarios;i++) {
+	do {
 		
-		if (v_usuarios[i].Usuario==usuario) {
-			printf("\nERROR: USUARIO en uso\n");
-			goto USUARIO;
+		printf("\nIntroduzca usuario (5 caracteres): ");
+		fflush(stdin);
+		fgets(usuario, 6, stdin);		
+			
+		for (i=0;i<nUsuarios;i++) {
+		
+			if (strcmp(v_usuarios[i].Usuario,usuario)==0) {
+				printf("\nERROR: USUARIO en uso\n");
+				printf("¿Desea volver a intentarlo? (1.Seguir)\n");
+				scanf("%d", &res);
+				
+				if (res!=1) {
+					return;
+				}
+				
+				break;
+			}
 		}
-	}
 	
-	printf("Introduzca contrasena (8 caracteres): ");
+	} while(strcmp(v_usuarios[i].Usuario,usuario)==0);
+	
+	printf("\nIntroduzca contrasena (8 caracteres): ");
 	fflush(stdin);
 	fgets(contrasena, 9, stdin);	
 	
-	printf("¿Desea crear este usuario? \n(1.Confirmar)\n");
+	printf("\n¿Desea crear este usuario? (1.Confirmar)\n");
 	scanf("%d", &res);
 	
 	if (res==1) {
@@ -206,11 +225,11 @@ void agregar_usuarios (int *nUsuarios) {
 		
 		*nUsuarios= *nUsuarios+1;
 		
-		v_usuarios[nUsuarios-1].Id_usuario=id;
-		v_usuarios[nUsuarios-1].Nomb_usuario=nombre;
-		v_usuarios[nUsuarios-1].Perfil_usuario=perfil;
-		v_usuarios[nUsuarios-1].Usuario=usuario;
-		v_usuarios[nUsuarios-1].Contrasena=contrasena;
+		strcpy(v_usuarios[nUsuarios-1].Id_usuario,id);
+		strcpy(v_usuarios[nUsuarios-1].Nomb_usuario,nombre);
+		strcpy(v_usuarios[nUsuarios-1].Perfil_usuario,perfil);
+		strcpy(v_usuarios[nUsuarios-1].Usuario,usuario);
+		strcpy(v_usuarios[nUsuarios-1].Contrasena,contrasena);
 		
 	}
 	
@@ -221,50 +240,47 @@ void eliminar_usuarios (int *nUsuarios) {
 	int i, res;
 	char id[4];
 	
-	SEGUIR:
+	do{
 		
-	printf("Introduzca el id (3 digitos) del usuario a eliminar: ");
-	fflush(stdin);
-	fgets(id, 4, stdin);
+		printf("\nIntroduzca el id (3 digitos) del usuario a eliminar: ");
+		fflush(stdin);
+		fgets(id, 4, stdin);
 	
-	if (i=0;i<nUsuarios;i++) {
+		for (i=0;i<nUsuarios;i++) {
 		
-		if (id==v_usuarios[i].Id_usuario) {
-			break;
+			if (strcmp(id,v_usuarios[i].Id_usuario)==0) {
+				break;
+			}
 		}
-	}
 	
-	if (i==nUsuarios) {
-		printf("ERROR: ID de usuario no encontrado\n");
-		printf("¿Desea volver a introducirlo? (1.Seguir)");
-		scanf("%d", &res);
+		if (i==nUsuarios) {
+			printf("\nERROR: ID de usuario no encontrado\n");
+			printf("\n¿Desea volver a introducirlo? (1.Seguir)\n");
+			scanf("%d", &res);
 		
-		if (res==1) {
-			goto SEGUIR;
-		}else{
-			goto FIN;
-		}
-	}
+			if (res!=1) {
+				return;
+			}
+		}		
+		
+	}while(i==nUsuarios);
 	
-	printf("¿Desea eliminar el usuario? (1.Confirmar)\n");
+	printf("\n¿Desea eliminar el usuario? (1.Confirmar)\n");
 	scanf("%d", &res);
 	
 	if (res==1) {
 		
 		for (i=i;i<(nUsuarios-1);i++) {
 		
-			v_usuarios[i].Id_usuario=v_usuarios[i+1].Id_usuario;
-			v_usuarios[i].Nomb_usuario=v_usuarios[i+1].Nomb_usuario;
-			v_usuarios[i].Perfil_usuario=v_usuarios[i+1].Perfil_usuario;
-			v_usuarios[i].Usuario=v_usuarios[i+1].Usuario;
-			v_usuarios[i].Contrasena=v_usuarios[i+1].Contrasena;
+			strcpy(v_usuarios[i].Id_usuario,v_usuarios[i+1].Id_usuario);
+			strcpy(v_usuarios[i].Nomb_usuario,v_usuarios[i+1].Nomb_usuario);
+			strcpy(v_usuarios[i].Perfil_usuario,v_usuarios[i+1].Perfil_usuario);
+			strcpy(v_usuarios[i].Usuario,v_usuarios[i+1].Usuario);
+			strcpy(v_usuarios[i].Contrasena,v_usuarios[i+1].Contrasena);
 		}
 		
 		*nUsuarios= *nUsuarios-1;
 	}	
-	
-	FIN:
-	
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,10 +289,10 @@ void listar_alumnos (int nAlumnos) {
 	
 	int i;
 	printf("\n\nLISTA ALUMNOS\n\n");
-	printf("ID-NOMBRE-DIRECCION-LOCALIDAD-CURSO-GRUPO");
+	printf("ID-NOMBRE-DIRECCION-LOCALIDAD-CURSO-GRUPO\n");
 	
 	for (i=0;i<nAlumnos;i++) {
-		printf("%s-%s-%s-%s-%s-%s",v_alumnos[i].Id_alum,v_alumnos[i].Nombre_alum,v_alumnos[i].Direc_alum,v_alumnos[i].Local_alum,v_alumnos[i].Curso,v_alumnos[i].Grupo);
+		printf("%s-%s-%s-%s-%s-%s\n",v_alumnos[i].Id_alum,v_alumnos[i].Nombre_alum,v_alumnos[i].Direc_alum,v_alumnos[i].Local_alum,v_alumnos[i].Curso,v_alumnos[i].Grupo);
 	}
 }
 
@@ -294,28 +310,29 @@ void modificar_alumnos (int nAlumnos) {
 		
 		for (i=0;i<nAlumnos;i++) {
 			
-			if (id==v_alumnos[i].Id_alum) {
-				
-				goto MODIFICA;
+			if (strcmp(id,v_alumnos[i].Id_alum)==0) {
+				break;
 			}
 			
 		}
 		
-		printf("\nERROR: No se ha encontrado alumno");
+		if (i==nAlumnos) {
+			
+			printf("\nERROR: No se ha encontrado alumno");
+			printf("\n¿Desea volver a intentarlo? (1.Seguir)\n");
+			scanf("%d", &res);
 		
-		printf("¿Desea continuar? (Pulse 1 para seguir)");
-		scanf("%d", &res);
-		
-		if (res!=1) {
-			goto FIN;
+			if (res!=1) {
+				return;
+			}			
 		}
 		
-	}while(v_alumnos[i].Id_alum!=id);
-	
-	MODIFICA:
+	}while(i==nAlumnos);
+			
+	do {
 		
-		printf("ID-NOMBRE-DIRECCION-LOCALIDAD-CURSO-GRUPO");
-		printf("%s-%s-%s-%s-%s-%s",v_alumnos[i].Id_alum,v_alumnos[i].Nombre_alum,v_alumnos[i].Direc_alum,v_alumnos[i].Local_alum,v_alumnos[i].Curso,v_alumnos[i].Grupo);
+		printf("ID-NOMBRE-DIRECCION-LOCALIDAD-CURSO-GRUPO\n");
+		printf("%s-%s-%s-%s-%s-%s\n",v_alumnos[i].Id_alum,v_alumnos[i].Nombre_alum,v_alumnos[i].Direc_alum,v_alumnos[i].Local_alum,v_alumnos[i].Curso,v_alumnos[i].Grupo);
 
 		printf("\t1.ID\n");
 		printf("\t2.NOMBRE\n");
@@ -326,105 +343,92 @@ void modificar_alumnos (int nAlumnos) {
 		printf("\t7.MATRICULAS\n");
 		printf("\t0.Volver a menu alumnos\n");
 		
-		do {
-	
-			scanf("%d", &op);
+		scanf("%d", &op);
 					
-			switch (op) {
+		switch (op) {
 						
-				case 0:
-					break;
+			case 0:
+				break;
 							
-				case 1:	
+			case 1:	
 					
-					printf("Introduzca nuevo ID: ");
-					fflush(stdin);
-					fgets(cambio, 7, stdin);
-					v_alumnos[i].Id_alum=cambio;
-					
-					goto MODIFICA;
+				printf("\nIntroduzca nuevo ID: ");
+				fflush(stdin);
+				fgets(cambio, 7, stdin);
+				strcpy(v_alumnos[i].Id_alum,cambio);				
+				break;
 						
-				case 2:
-					printf("Introduzca nuevo nombre: ");
-					fflush(stdin);
-					fgets(cambio, 21, stdin);
-					v_alumnos[i].Nombre_alum=cambio;
-					
-					goto MODIFICA;
+			case 2:
+				printf("\nIntroduzca nuevo nombre: ");
+				fflush(stdin);
+				fgets(cambio, 21, stdin);
+				strcpy(v_alumnos[i].Nombre_alum,cambio);
+				break;
 								
-				case 3:	
-					printf("Introduzca nueva direccion: ");
-					fflush(stdin);
-					fgets(cambio, 31, stdin);
-					v_alumnos[i].Direc_alum=cambio;
-					
-					goto MODIFICA;
+			case 3:	
+				printf("\nIntroduzca nueva direccion: ");
+				fflush(stdin);
+				fgets(cambio, 31, stdin);
+				strcpy(v_alumnos[i].Direc_alum,cambio);
+				break;
 						
-				case 4:
-					printf("Introduzca nueva localidad: ");
-					fflush(stdin);
-					fgets(cambio, 31, stdin);
-					v_alumnos[i].Local_alum=cambio;
+			case 4:
+				printf("\nIntroduzca nueva localidad: ");
+				fflush(stdin);
+				fgets(cambio, 31, stdin);
+				strcpy(v_alumnos[i].Local_alum,cambio);
+				break;
 					
-					goto MODIFICA;
+			case 5:
+				printf("\nIntroduzca nuevo curso: ");
+				fflush(stdin);
+				fgets(cambio, 31, stdin);
+				strcpy(v_alumnos[i].Curso,cambio);
+				break;	
 					
-				case 5:
-					printf("Introduzca nuevo curso: ");
-					fflush(stdin);
-					fgets(cambio, 31, stdin);
-					v_alumnos[i].Curso=cambio;
-										
-					goto MODIFICA;	
+			case 6:
+				printf("\nIntroduzca nuevo grupo: ");
+				fflush(stdin);
+				fgets(cambio, 11, stdin);
+				strcpy(v_alumnos[i].Grupo,cambio);
+				break;
 					
-				case 6:
-					printf("Introduzca nuevo grupo: ");
-					fflush(stdin);
-					fgets(cambio, 11, stdin);
-					v_alumnos[i].Grupo=cambio;
-										
-					goto MODIFICA;
+			case 7:	
+				printf("\n\nMATRICULAS\n\n")
+				materias_matriculado (i,nMatriculas,nMaterias);
 					
-				case 7:
-					MATRICULAS:
+				do {
 						
-					printf("\n\nMATRICULAS\n\n")
-					materias_matriculado (i,nMatriculas,nMaterias);
-					
-					do {
+					printf("\t1.Agregar matricula\n");
+					printf("\t2.Eliminar matricula\n");
+					printf("\t3.Modificar matricula\n");
+					printf("\t0.Volver al menu de modificacion\n");
 						
-						printf("\t1.Agregar matricula\n");
-						printf("\t2.Eliminar matricula\n");
-						printf("\t3.Modificar matricula\n");
-						printf("\t0.Volver al menu alumnos\n");
+					scanf("%d", &n);
 						
-						scanf("%d", &op);
-						
-						switch (op) {
+					switch (n) {
 							
-							case 0:
-								goto ALUMNOS;
+						case 0:
+							break;
 								
-							case 1:
-								agregar_matricula (i);
-								goto MATRICULAS;
+						case 1:
+							agregar_matricula (i);
+							break;
 								
-							case 2:
-								eliminar_matricula (i);
-								goto MATRICULAS;
+						case 2:
+							eliminar_matricula (i);
+							break;
 								
-							case 3:
-								modificar_matricula (i);
-								goto MATRICULAS;																
-						}
+						case 3:
+							modificar_matricula (i);
+							break;																
+					}
 						
-					}while((n!=0)&&(n!=1)&&(n!=2)&&(n!=3));
+				}while(n!=0);
 							
-			}
+		}
 					
-		}while((n!=0)&&(n!=1)&&(n!=2)&&(n!=3)&&(n!=4)&&(n!=5)&&(n!=6)&&(n!=7));
-		
-		FIN:		
-	
+	}while(op!=0);		
 	
 }
 
@@ -438,41 +442,51 @@ void agregar_alumnos (int *nAlumnos) {
 	char curso[31];
 	char grupo[11];
 	
-	ID:
-			
-	printf("Introduzca id (6 digitos) del alumno: ");
-	fflush(stdin);
-	fgets(id, 7, stdin);		
-			
-	for (i=0;i<nAlumnos;i++) {
+	do {
 		
-		if (v_alumnos[i].Id_alum==id) {
-			printf("\nERROR: ID en uso\n");
-			goto ID;
-		}
-	}
+		printf("\nIntroduzca id (6 digitos) del alumno: ");
+		fflush(stdin);
+		fgets(id, 7, stdin);		
 			
-	printf("Introduzca nombre (20 caracteres) del alumno: ");
+		for (i=0;i<nAlumnos;i++) {
+		
+			if (strcmp(v_alumnos[i].Id_alum,id)==0) {
+				printf("\nERROR: ID en uso\n");
+				printf("¿Desea volver a intentarlo? (1.Seguir)\n");
+				scanf("%d", &res);
+				
+				if (res!=1) {
+					return;
+				}
+				
+				break;
+			}
+		}
+	
+	} while(strcmp(v_alumnos[i].Id_alum,id)==0);		
+		
+			
+	printf("\nIntroduzca nombre (20 caracteres) del alumno: ");
 	fflush(stdin);
 	fgets(nombre, 21, stdin);		
 			
-	printf("Introduzca direccion (30 caracteres) del alumno: ");
+	printf("\nIntroduzca direccion (30 caracteres) del alumno: ");
 	fflush(stdin);
 	fgets(direccion, 31, stdin);
 	
-	printf("Introduzca localidad (30 caracteres) del alumno: ");
+	printf("\nIntroduzca localidad (30 caracteres) del alumno: ");
 	fflush(stdin);
 	fgets(localidad, 31, stdin);
 	
-	printf("Introduzca curso (30 caracteres) del alumno: ");
+	printf("\nIntroduzca curso (30 caracteres) del alumno: ");
 	fflush(stdin);
 	fgets(curso, 31, stdin);
 	
-	printf("Introduzca grupo (10 caracteres) del alumno: ");
+	printf("\nIntroduzca grupo (10 caracteres) del alumno: ");
 	fflush(stdin);
 	fgets(grupo, 11, stdin);	
 	
-	printf("¿Desea crear este alumno? \n(1.Confirmar)\n");
+	printf("\n¿Desea crear este alumno? (1.Confirmar)\n");
 	scanf("%d", &res);
 	
 	if (res==1) {
@@ -481,12 +495,12 @@ void agregar_alumnos (int *nAlumnos) {
 		
 		*nAlumnos= *nAlumnos+1;
 		
-		v_alumnos[nAlumnos-1].Id_alum=id;
-		v_alumnos[nAlumnos-1].Nombre_alum=nombre;
-		v_alumnos[nAlumnos-1].Direc_alum=direccion;
-		v_alumnos[nAlumnos-1].Local_alum=localidad;
-		v_alumnos[nAlumnos-1].Curso=curso;
-		v_alumnos[nAlumnos-1].Grupo=grupo;
+		strcpy(v_alumnos[nAlumnos-1].Id_alum,id);
+		strcpy(v_alumnos[nAlumnos-1].Nombre_alum,nombre);
+		strcpy(v_alumnos[nAlumnos-1].Direc_alum,direccion);
+		strcpy(v_alumnos[nAlumnos-1].Local_alum,localidad);
+		strcpy(v_alumnos[nAlumnos-1].Curso,curso);
+		strcpy(v_alumnos[nAlumnos-1].Grupo,grupo);
 		
 	}	
 	
@@ -497,51 +511,49 @@ void eliminar_alumnos (int *nAlumnos) {
 	int i, res;
 	char id[7];
 	
-	SEGUIR:
+	do{
 		
-	printf("Introduzca el id (6 digitos) del alumno a eliminar: ");
-	fflush(stdin);
-	fgets(id, 7, stdin);
+		printf("\nIntroduzca el id (6 digitos) del alumno a eliminar: ");
+		fflush(stdin);
+		fgets(id, 7, stdin);
 	
-	if (i=0;i<nAlumnos;i++) {
+		for (i=0;i<nAlumnos;i++) {
 		
-		if (id==v_alumnos[i].Id_alum) {
-			break;
+			if (strcmp(id,v_alumnos[i].Id_alum)==0) {
+				break;
+			}
 		}
-	}
 	
-	if (i==nAlumnos) {
-		printf("ERROR: ID de alumno no encontrado\n");
-		printf("¿Desea volver a introducirlo? (1.Seguir)");
-		scanf("%d", &res);
+		if (i==nAlumnos) {
+			printf("\nERROR: ID de alumnos no encontrado\n");
+			printf("¿Desea volver a introducirlo? (1.Seguir)\n");
+			scanf("%d", &res);
 		
-		if (res==1) {
-			goto SEGUIR;
-		}else{
-			goto FIN;
-		}
-	}
+			if (res!=1) {
+				return;
+			}
+		}		
+		
+	}while(i==nAlumnos);
 	
-	printf("¿Desea eliminar el alumno? (1.Confirmar)\n");
+	printf("\n¿Desea eliminar el alumno? (1.Confirmar)\n");
 	scanf("%d", &res);
 	
 	if (res==1) {
 		
 		for (i=i;i<(nAlumnos-1);i++) {
 		
-			v_alumnos[i].Id_alum=v_alumnos[i+1].Id_alum;
-			v_alumnos[i].Nombre_alum=v_alumnos[i+1].Nombre_alum;
-			v_alumnos[i].Direc_alum=v_alumnos[i+1].Direc_alum;
-			v_alumnos[i].Local_alum=v_alumnos[i+1].Local_alum;
-			v_alumnos[i].Curso=v_alumnos[i+1].Curso;
-			v_alumnos[i].Grupo=v_alumnos[i+1].Grupo;
+			strcpy(v_alumnos[i].Id_alum,v_alumnos[i+1].Id_alum);
+			strcpy(v_alumnos[i].Nombre_alum,v_alumnos[i+1].Nombre_alum);
+			strcpy(v_alumnos[i].Direc_alum,v_alumnos[i+1].Direc_alum);
+			strcpy(v_alumnos[i].Local_alum,v_alumnos[i+1].Local_alum);
+			strcpy(v_alumnos[i].Curso,v_alumnos[i+1].Curso);
+			strcpy(v_alumnos[i].Grupo,v_alumnos[i+1].Grupo);
 			
 		}
 		
 		*nAlumnos= *nAlumnos-1;
 	}	
-	
-	FIN:	
 	
 }
 
@@ -549,20 +561,17 @@ void eliminar_alumnos (int *nAlumnos) {
 void materias_matriculado (int i_alumno, int nMatriculas, int nMaterias) {
 	
 	int i, j;
-	char materia[5];
 	
-	printf("ALUMNO: %s\n",v_alumnos[i_alumno].Nombre_alum);
+	printf("\nALUMNO: %s\n",v_alumnos[i_alumno].Nombre_alum);
 	printf("MATRICULADO EN: \n");
 	
 	for (i=0; i<nMatriculas; i++) {
 		
-		if (v_alumnos[i_alumno].Id_alum==v_matriculas[i].Id_alum) {
-			
-			materia=v_matriculas[i].Id_materias;
+		if (strcmp(v_alumnos[i_alumno].Id_alum,v_matriculas[i].Id_alum)==0) {
 			
 			for (j=0; j<nMaterias; j++) {
 				
-				if (v_materias[j].Id_materias==materia) {
+				if (strcmp(v_materias[j].Id_materias,v_matriculas[i].Id_materias)==0) {
 					
 					printf("-%s \n", v_materias[j].Nombre_materia);
 					
@@ -582,94 +591,92 @@ void modificar_matricula (int i_alumno, int nMatriculas) {
 	
 	do {
 		
-		printf("Introduzca id (4 digitos) de la matricula que desea modificar");
+		printf("\nIntroduzca id (4 digitos) de la matricula que desea modificar");
 		fflush(stdin);
 		fgets(materia, 5, stdin);
 		
 		for (i=0;i<nMatriculas;i++) {
 			
-			if (v_alumnos[i_alumno].Id_alum==v_matriculas[i].Id_alum) {
+			if (strcmp(v_alumnos[i_alumno].Id_alum,v_matriculas[i].Id_alum)==0) {
 				
 				for (j=0;j<nMatriculas;j++) {
 					 
-					 if (v_matriculas[j].Id_materias==materia) {
+					 if (strcmp(v_matriculas[j].Id_materias,materia)==0) {
 					 	
-					 	goto MODIFICA;
+					 	break;
 					 }
 				}
 			}
 			
+			if(strcmp(v_matriculas[j].Id_materias,materia)==0) { //El mismo if de arriba, pero es para salir del primer for y tener la "i"
+				break;
+			}
+			
 		}
 		
-		printf("\nERROR: No se ha encontrado materia");
+		if (i==nMatriculas) {
+			
+			printf("\nERROR: No se ha encontrado materia");
+			printf("\n¿Desea volver a introducirlo? (1.Seguir)\n");
+			scanf("%d", &res);
 		
-		printf("¿Desea continuar? (Pulse 1 para seguir)");
-		scanf("%d", &res);
+			if (res!=1) {
+				return;
+			}			
+		}
 		
-		if (res!=1) {
-			goto FIN;
-		}		
+	}while(i==nMatriculas);
 		
-		
-	}while(v_matriculas[j].Id_materias!=materia);
-	
-	MODIFICA:
-		
-		printf("Introduzca nueva matricula:");
-		fflush(stdin);
-		fgets(materia, 5, stdin);
-		v_matriculas[j].Id_materias=materia;
-		
-	FIN:	
+	printf("\nIntroduzca nueva matricula:");
+	fflush(stdin);
+	fgets(materia, 5, stdin);
+	strcpy(v_matriculas[j].Id_materias,materia);	
 	
 }
 
-void eliminar_matricula (int i_alumno, int *nMatriculas, int nAlumnos) {
+void eliminar_matricula (int i_alumno, int *nMatriculas) {
 	
 	int i, res;
 	char materia[5];
 	
-	SEGUIR:
+	do{
 		
-	printf("Introduzca el id (4 digitos) de la materia de la que quiere desmatricular al alumno: ");
-	fflush(stdin);
-	fgets(materia, 5, stdin);
+		printf("\nIntroduzca el id (4 digitos) de la materia de la que quiere desmatricular al alumno: ");
+		fflush(stdin);
+		fgets(materia, 5, stdin);
 	
-	if (i=0;i<nMatriculas;i++) {
+		for (i=0;i<nMatriculas;i++) {
 		
-		if ((materia==v_matriculas[i].Id_materias)&&(v_matriculas[i].Id_alum==v_alumnos[i_alumno].Id_alum)) {
-			break;
+			if ((strcmp(materia,v_matriculas[i].Id_materias)==0)&&(strcmp(v_matriculas[i].Id_alum,v_alumnos[i_alumno].Id_alum)==0)) {
+				break;
+			}
 		}
-	}
 	
-	if (i==nMatriculas) {
-		printf("ERROR: Matricula no encontrada\n");
-		printf("¿Desea volver a introducirla? (1.Seguir)");
-		scanf("%d", &res);
+		if (i==nMatriculas) {
+			printf("\nERROR: MATRICULA no encontrada\n");
+			printf("¿Desea volver a introducirla? (1.Seguir)\n");
+			scanf("%d", &res);
 		
-		if (res==1) {
-			goto SEGUIR;
-		}else{
-			goto FIN;
-		}
-	}
+			if (res!=1) {
+				return;
+			}
+		}		
+		
+	}while(i==nMatriculas);
 	
-	printf("¿Desea realizar la desmatriculacion? (1.Confirmar)\n");
+	printf("\n¿Desea realizar la desmatriculacion? (1.Confirmar)\n");
 	scanf("%d", &res);
 	
 	if (res==1) {
 		
 		for (i=i;i<(nMatriculas-1);i++) {
 		
-			v_matriculas[i].Id_alum=v_matriculas[i+1].Id_alum;
-			v_matriculas[i].Id_materias=v_matriculas[i+1].Id_materias;
+			strcpy(v_matriculas[i].Id_alum,v_matriculas[i+1].Id_alum);
+			strcpy(v_matriculas[i].Id_materias,v_matriculas[i+1].Id_materias);
 		}
 		
 		*nMatriculas= *nMatriculas-1;
-	}	
-	
-	FIN:
-		
+	}		
 	
 }
 
@@ -678,49 +685,55 @@ void agregar_matricula (int i_alumno, int nMaterias, int *nMatriculas) {
 	int i, j, res;
 	char materia[5];
 	
-	SEGUIR:
+	do {
 		
-	printf("Introduzca la materia (4 digitos) en la que va a matricular: ");
-	fflsuh(stdin);
-	fgets(materia, 5, stdin);
-	
-	for (i=0;i<nMaterias;i++) { //Comprueba si la materia existe
-		
-		if (v_materias[i].Id_materias==materia) {
-			break;
-		}
-	}
-	
-	if (i=nMaterias) {
-		printf("ERROR: La materia introducida no existe\n");
-		printf("¿Desea intentarlo de nuevo? (1.Seguir)");
-		scanf("%d", res);
-		
-		if (res==1) {
-			goto SEGUIR;
-		} else {
-			goto FIN;
-		}
-	}
-	
-	for (j=0;j<nMatriculas;j++) {  //Comprueba si el alumno esta matriculado en ese momento
-		
-		if ((v_materias[i].Id_materias==v_matriculas[j].Id_materias)&&(v_alumnos[i_usuario].Id_alum==v_matriculas[j].Id_alum)) {
+		printf("\nIntroduzca el ID MATERIA (4 digitos) en la que va a matricular: ");
+		fflsuh(stdin);
+		fgets(materia, 5, stdin);		
 			
-			printf("ERROR: El alumno ya esta matriculado en la materia");
-			printf("¿Desea intentarlo de nuevo? (1.Seguir)");
-			scanf("%d", &res);
-			
-			if (res==1) {
-				goto SEGUIR;
-			} else {
-				goto FIN;
+		for (i=0;i<nMaterias;i++) {
+		
+			if (strcmp(v_materias[i].Id_materias,materia)==0) {
+				break;
+
 			}
-					
 		}
-	}
+		
+		if (i==nMaterias) {
+			
+			printf("\nERROR: La MATERIA no existe\n");
+			printf("¿Desea volver a intentarlo? (1.Seguir)\n");
+			scanf("%d", &res);
+				
+			if (res!=1) {
+				return;
+			}				
+		}		
 	
-	printf("¿Desea crear la matricula? (1.Confirmar)\n");
+	} while(i==nMaterias);	
+	
+	do{
+		
+		for (j=0;j<nMatriculas;j++) {  //Comprueba si el alumno esta matriculado en ese momento
+		
+			if ((strcmp(v_materias[i].Id_materias,v_matriculas[j].Id_materias)==0)&&(strcmp(v_alumnos[i_usuario].Id_alum,v_matriculas[j].Id_alum)==0)) {
+			
+				printf("\nERROR: El alumno ya esta matriculado en la materia");
+				printf("\n¿Desea intentarlo de nuevo? (1.Seguir)\n");
+				scanf("%d", &res);
+			
+				if (res!=1) {
+					return;
+				}
+				break;
+					
+			}
+		}		
+		
+	}while((strcmp(v_materias[i].Id_materias,v_matriculas[j].Id_materias)==0)&&(strcmp(v_alumnos[i_usuario].Id_alum,v_matriculas[j].Id_alum)==0));
+
+	
+	printf("\n¿Desea crear la matricula? (1.Confirmar)\n");
 	scanf("%d", &res);
 	
 	if (res==1) {
@@ -729,12 +742,11 @@ void agregar_matricula (int i_alumno, int nMaterias, int *nMatriculas) {
 		
 		*nMatriculas= *nMatriculas+1;
 		
-		v_matriculas[nMatriculas-1].Id_alum=v_alumnos[i_usuario].Id_alum;
-		v_matriculas[nMatriculas-1].Id_materias=materia;
+		strcpy(v_matriculas[nMatriculas-1].Id_alum,v_alumnos[i_usuario].Id_alum);
+		strcpy(v_matriculas[nMatriculas-1].Id_materias,materia);
 				
 	}
-	
-	FIN:
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -753,73 +765,69 @@ void modificar_materias (int nMaterias) {
 		
 		for (i=0;i<nMaterias;i++) {
 			
-			if (id==v_materias[i].Id_materias) {
+			if (strcmp(id==v_materias[i].Id_materias)==0) {
 				
-				goto MODIFICA;
+				break;
 			}
 			
 		}
 		
-		printf("\nERROR: No se ha encontrado materia");
+		if (i==nMaterias) {
+			
+			printf("\nERROR: No se ha encontrado ID MATERIA");
+			printf("\n¿Desea volver a introducira? (1.Seguir)\n");
+			scanf("%d", &res);
 		
-		printf("¿Desea continuar? (Pulse 1 para seguir)");
-		scanf("%d", &res);
-		
-		if (res!=1) {
-			goto FIN;
+			if (res!=1) {
+				return;
+			}			
 		}
 		
-	}while(v_materias[i].Id_materias!=id);
+	}while(i==nMaterias);
 	
-	MODIFICA:
 		
-		printf("ID-NOMBRE-ABREVIATURA");
-		printf("%s-%s-%s",v_materias[i].Id_materias,v_materias[i].Nombre_materia,v_materias[i].Abrev_materia);
+	do {
+		
+		printf("\nID-NOMBRE-ABREVIATURA\n");
+		printf("%s-%s-%s\n",v_materias[i].Id_materias,v_materias[i].Nombre_materia,v_materias[i].Abrev_materia);
 	
 		printf("\t1.ID\n");
 		printf("\t2.NOMBRE\n");
 		printf("\t3.ABREVIATURA\n");
-		printf("\t0.Volver a menu materias\n");
-		
-		do {
+		printf("\t0.Volver a menu materias\n");		
 	
-			scanf("%d", &op);
+		scanf("%d", &op);
 					
-			switch (op) {
-						
-				case 0:
-					break;
+		switch (op) {
+					
+			case 0:
+				break;
 							
-				case 1:	
+			case 1:	
 					
-					printf("Introduzca nuevo ID: ");
-					fflush(stdin);
-					fgets(cambio, 5, stdin);
-					v_materias[i].Id_materias=cambio;
-					
-					goto MODIFICA;
+				printf("\nIntroduzca nuevo ID: ");
+				fflush(stdin);
+				fgets(cambio, 5, stdin);
+				strcpy(v_materias[i].Id_materias,cambio);
+				break;
 						
-				case 2:
-					printf("Introduzca nuevo nombre: ");
-					fflush(stdin);
-					fgets(cambio, 51, stdin);
-					v_materias[i].Nombre_materia=cambio;
-					
-					goto MODIFICA;
+			case 2:
+				printf("\nIntroduzca nuevo nombre: ");
+				fflush(stdin);
+				fgets(cambio, 51, stdin);
+				strcpy(v_materias[i].Nombre_materia,cambio);
+				break;
 								
-				case 3:	
-					printf("Introduzca nuevo abreviatura: ");
-					fflush(stdin);
-					fgets(cambio, 4, stdin);
-					v_materias[i].Abrev_materia=cambio;
+			case 3:	
+				printf("\nIntroduzca nuevo abreviatura: ");
+				fflush(stdin);
+				fgets(cambio, 4, stdin);
+				strcpy(v_materias[i].Abrev_materia,cambio);
+				break;	
+		}
 					
-					goto MODIFICA;	
-			}
-					
-		}while((n!=0)&&(n!=1)&&(n!=2)&&(n!=3));
+	}while(op!=0);
 		
-		FIN:	
-	
 }
 
 void agregar_materias (int *nMaterias) {
@@ -829,49 +837,73 @@ void agregar_materias (int *nMaterias) {
 	char nombre[51];
 	char abreviatura[4];
 	
-	ID:
-			
-	printf("Introduzca id (4 digitos) de la materia: ");
-	fflush(stdin);
-	fgets(id, 5, stdin);		
-			
-	for (i=0;i<nMaterias;i++) {
+	do {
 		
-		if (v_materias[i].Id_materias==id) {
-			printf("\nERROR: ID en uso\n");
-			goto ID;
-		}
-	}
+		printf("\nIntroduzca el ID MATERIA (4 digitos): ");
+		fflsuh(stdin);
+		fgets(id, 5, stdin);		
 			
-	NOMBRE:
-			
-	printf("Introduzca nombre (50 caracteres) de la materia: ");
-	fflush(stdin);
-	fgets(nombre, 51, stdin);		
-			
-	for (i=0;i<nMaterias;i++) {
+		for (i=0;i<nMaterias;i++) {
 		
-		if (v_materias[i].Nombre_materia==nombre) {
-			printf("\nERROR: NOMBRE en uso\n");
-			goto NOMBRE;
+			if (strcmp(v_materias[i].Id_materias,id)==0) {
+				printf("\nERROR: ID MATERIA en uso\n");
+				printf("¿Desea volver a intentarlo? (1.Seguir)\n");
+				scanf("%d", &res);
+				
+				if (res!=1) {
+					return;
+				}			
+				break;
+			}
 		}
-	}		
-			
-	ABREVIATURA:
-			
-	printf("Introduzca abreviatura (3 caracteres) de la materia: ");
-	fflush(stdin);
-	fgets(abreviatura, 4, stdin);		
-			
-	for (i=0;i<nMaterias;i++) {
-		
-		if (v_materias[i].Abrev_materia==abreviatura) {
-			printf("\nERROR: ABREVIATURA en uso\n");
-			goto ABREVIATURA;
-		}
-	}
 	
-	printf("¿Desea crear esta materia? \n(1.Confirmar)\n");
+	} while(strcmp(v_materias[i].Id_materias,materia)==0);			
+		
+	do {
+		
+		printf("\nIntroduzca nombre (50 caracteres) de la materia: ");
+		fflush(stdin);
+		fgets(nombre, 51, stdin);		
+			
+		for (i=0;i<nMaterias;i++) {
+		
+			if (strcmp(v_materias[i].Nombre_materia,nombre)==0) {
+				printf("\nERROR: NOMBRE en uso\n");
+				printf("¿Desea volver a intentarlo? (1.Seguir)\n");
+				scanf("%d", &res);
+				
+				if (res!=1) {
+					return;
+				}			
+				break;
+			}
+		}
+	
+	} while(strcmp(v_materias[i].Nombre_materia,nombre)==0);
+					
+	do {
+		
+		printf("\nIntroduzca abreviatura (3 caracteres) de la materia: ");
+		fflush(stdin);
+		fgets(abreviatura, 4, stdin);		
+			
+		for (i=0;i<nMaterias;i++) {
+		
+			if (strcmp(v_materias[i].Abrev_materia,abreviatura)==0) {
+				printf("\nERROR: ABREVIATURA en uso\n");
+				printf("¿Desea volver a intentarlo? (1.Seguir)\n");
+				scanf("%d", &res);
+				
+				if (res!=1) {
+					return;
+				}			
+				break;
+			}
+		}
+	
+	} while(strcmp(v_materias[i].Abrev_materia,abreviatura)==0);			
+	
+	printf("\n¿Desea crear esta materia? (1.Confirmar)\n");
 	scanf("%d", &res);
 	
 	if (res==1) {
@@ -880,9 +912,9 @@ void agregar_materias (int *nMaterias) {
 		
 		*nMaterias= *nMaterias+1;
 		
-		v_materias[nMaterias-1].Id_materias=id;
-		v_materias[nMaterias-1].Nombre_materia=nombre;
-		v_materias[nMaterias-1].Abrev_materia=abreviatura;
+		strcpy(v_materias[nMaterias-1].Id_materias,id);
+		strcpy(v_materias[nMaterias-1].Nombre_materia,nombre);
+		strcpy(v_materias[nMaterias-1].Abrev_materia,abreviatura);
 		
 	}	
 	
@@ -893,59 +925,57 @@ void eliminar_materias (int *nMaterias) {
 	int i, res;
 	char id[5];
 	
-	SEGUIR:
+	do{
 		
-	printf("Introduzca el id (4 digitos) de la materia a eliminar: ");
-	fflush(stdin);
-	fgets(id, 5, stdin);
+		printf("\nIntroduzca el id (4 digitos) de la materia a eliminar: ");
+		fflush(stdin);
+		fgets(id, 5, stdin);
 	
-	if (i=0;i<nMaterias;i++) {
+		for (i=0;i<nMaterias;i++) {
 		
-		if (id==v_materias[i].Id_materias) {
-			break;
+			if (strcmp(id,v_materias[i].Id_materias)==0) {
+				break;
+			}
 		}
-	}
 	
-	if (i==nMaterias) {
-		printf("ERROR: ID de materia no encontrado\n");
-		printf("¿Desea volver a introducirlo? (1.Seguir)");
-		scanf("%d", &res);
+		if (i==nMaterias) {
+			printf("\nERROR: MATERIA no encontrada\n");
+			printf("¿Desea volver a introducirla? (1.Seguir)\n");
+			scanf("%d", &res);
 		
-		if (res==1) {
-			goto SEGUIR;
-		}else{
-			goto FIN;
-		}
-	}
+			if (res!=1) {
+				return;
+			}
+		}		
+		
+	}while(i==nMaterias);
 	
-	printf("¿Desea eliminar la materia? (1.Confirmar)\n");
+	printf("\n¿Desea eliminar la materia? (1.Confirmar)\n");
 	scanf("%d", &res);
 	
 	if (res==1) {
 		
 		for (i=i;i<(nMaterias-1);i++) {
 		
-			v_materias[i].Id_materias=v_materias[i+1].Id_materias;
-			v_materias[i].Nombre_materia=v_materias[i+1].Nombre_materia;
-			v_materias[i].Abrev_materia=v_materias[i+1].Abrev_materia;
+			strcpy(v_materias[i].Id_materias,v_materias[i+1].Id_materias);
+			strcpy(v_materias[i].Nombre_materia,v_materias[i+1].Nombre_materia);
+			strcpy(v_materias[i].Abrev_materia,v_materias[i+1].Abrev_materia);
 			
 		}
 		
 		*nMaterias= *nMaterias-1;
 	}	
-	
-	FIN:		
-	
+
 }
 
 void listar_materias (int nMaterias) {
 	
 	int i;
 	printf("\n\nLISTA MATERIAS\n\n");
-	printf("ID-NOMBRE-ABREVIATURA");
+	printf("ID-NOMBRE-ABREVIATURA\n");
 	
 	for (i=0;i<nMaterias;i++) {
-		printf("%s-%s-%s",v_materias[i].Id_materias,v_materias[i].Nombre_materia,v_materias[i].Abrev_materia);
+		printf("%s-%s-%s\n",v_materias[i].Id_materias,v_materias[i].Nombre_materia,v_materias[i].Abrev_materia);
 	}	
 }
 
@@ -953,7 +983,7 @@ void listar_materias (int nMaterias) {
 
 void listar_horarios (int nUsuarios, int nHorarios) {
 	
-	int i, j, k;
+	int i, j;
 	char id[4];
 	
 	do { //Comprueba si el id introducido corresponde con uno del registro
@@ -964,43 +994,43 @@ void listar_horarios (int nUsuarios, int nHorarios) {
 		
 		for (i=0;i<nHorarios;i++) {
 			
-			if (id==v_horarios[i].Id_profesor) {
-				
-				goto LISTA;
+			if (strcmp(id,v_horarios[i].Id_profesor)==0) {
+				break;
 			}
 			
 		}
 		
-		printf("\nERROR: No se ha encontrado profesor");
+		if (i==nHorarios) {
+			
+			printf("\nERROR: Profesor no encontrado");
+			printf("\n¿Desea volver a introducirlo? (1.Seguir)\n");
+			scanf("%d", &res);
 		
-		printf("¿Desea continuar? (Pulse 1 para seguir)");
-		scanf("%d", &res);
-		
-		if (res!=1) {
-			goto FIN;
+			if (res!=1) {
+				return;
+			}			
 		}
+
 		
-	}while(v_horarios[i].Id_profesor!=id);	
+	}while(i==nHorarios);	
 	
-	LISTA:
-	
-	for (j=0;j<nUsuarios;j++) {  //Busca la i_usuario del profe en el registro de Usuarios
+	for (j=0;j<nUsuarios;j++) {  //Busca la j_usuario del profe en el registro de Usuarios
 		
-		if (id==v_usuarios[j].Id_usuario) {
+		if (strcmp(id,v_usuarios[j].Id_usuario)==0) {
 			break;
 		}
 		
 	}	
 	
-	printf("PROFESOR: %s\n",v_usuarios[j].Nomb_usuario);
-	printf("HORARIO: \n");
-	printf("\nDIA-HORA-ID MATERIA-GRUPO\n");
+	printf("\nPROFESOR: %s",v_usuarios[j].Nomb_usuario);
+	printf("\nHORARIO: \n");
+	printf("DIA-HORA-ID MATERIA-GRUPO\n");
 	
-	for (k=0;k<nHorarios;k++) {
+	for (i=0;i<nHorarios;i++) {
 		
-		if (v_horarios[k].Id_profesor==id) {
+		if (strcmp(v_horarios[i].Id_profesor,id)==0) {
 			
-			printf("%d-%d-%s-%s", v_horarios[k].Dia_clase, v_horarios[k].Hora_clase, v_horarios[k].Id_materia, v_horarios[k].Grupo);
+			printf("%d-%d-%s-%s\n", v_horarios[i].Dia_clase, v_horarios[i].Hora_clase, v_horarios[i].Id_materia, v_horarios[i].Grupo);
 		}
 	}
 	
@@ -1010,7 +1040,7 @@ void listar_horarios (int nUsuarios, int nHorarios) {
 void modificar_horarios (int nUsuarios, int nHorarios) {
 	
 	
-	int i, j, k, c, cond; //c es para cambio de enteros y cond para guardar la condicion (1/0) para realizar el cambio
+	int i, j, c, cond, q; //c es para cambio de enteros y cond para guardar la condicion (1/0) para realizar el cambio
 	char id[4];
 	char cambio[11];
 	
@@ -1022,49 +1052,46 @@ void modificar_horarios (int nUsuarios, int nHorarios) {
 		
 		for (i=0;i<nHorarios;i++) {
 			
-			if (id==v_horarios[i].Id_profesor) {
-				
-				goto LISTA;
+			if (strcmp(id,v_horarios[i].Id_profesor)==0) {
+				break;
 			}
 			
 		}
 		
-		printf("\nERROR: No se ha encontrado profesor");
+		if (i==nHorarios) {
+			
+			printf("\nERROR: Profesor no encontrado");
+			printf("\n¿Desea volver a introducirlo? (1.Seguir)");
+			scanf("%d", &res);
 		
-		printf("¿Desea continuar? (Pulse 1 para seguir)");
-		scanf("%d", &res);
-		
-		if (res!=1) {
-			goto FIN;
+			if (res!=1) {
+				return;
+			}			
 		}
+
 		
-	}while(v_horarios[i].Id_profesor!=id);	
-	
-	LISTA:
+	}while(i==nHorarios);	
 	
 	for (j=0;j<nUsuarios;j++) {  //Busca la i_usuario del profe en el registro de Usuarios
 		
-		if (id==v_usuarios[j].Id_usuario) {
+		if (strcmp(id,v_usuarios[j].Id_usuario)==0) {
 			break;
 		}
 		
 	}	
 	
-	printf("PROFESOR: %s\n",v_usuarios[j].Nomb_usuario);
-	
-	HORARIOS:
-	
-	printf("\nDIA-HORA-ID MATERIA-GRUPO\n");
-	
-	for (k=0;k<nHorarios;k++) {
-		
-		if (v_horarios[k].Id_profesor==id) {
-		
-			printf("%d-%d-%s-%s", v_horarios[k].Dia_clase, v_horarios[k].Hora_clase, v_horarios[k].Id_materia, v_horarios[k].Grupo);
-		}
-	}	
+	printf("\nPROFESOR: %s",v_usuarios[j].Nomb_usuario);
 	
 	do {
+		
+		printf("\nDIA-HORA-ID MATERIA-GRUPO\n");
+	
+		for (i=0;i<nHorarios;i++) {
+		
+			if (strcmp(v_horarios[i].Id_profesor,id)==0) {
+				printf("%d-%d-%s-%s\n", v_horarios[i].Dia_clase, v_horarios[i].Hora_clase, v_horarios[i].Id_materia, v_horarios[i].Grupo);
+			}
+		}				
 		
 		printf("\t1.DIA\n");
 		printf("\t2.HORA\n");
@@ -1086,19 +1113,18 @@ void modificar_horarios (int nUsuarios, int nHorarios) {
 					
 					do {
 						
-						printf("\nIntroduzca nuevo dia (1-5)\n");
+						printf("\nIntroduzca nuevo dia (1-5): ");
 						scanf("%d", &c);
 						
-					}while((c!=1)&&(c!=2)&&(c!=3)&&(c!=4)&&(c!=5));
+					}while((c<1)||(c>5));
 					
 					v_horarios[q].Dia_clase=c;
 					
 				} else {
 					
-					printf("ERROR: Algun parametro no se corresponde a un horarios existente\n");
+					printf("\nERROR: Algun parametro no se corresponde a un horario existente\n");
 				}
-
-				goto HORARIOS;
+				break;
 			
 			case 2:
 				
@@ -1108,20 +1134,18 @@ void modificar_horarios (int nUsuarios, int nHorarios) {
 					
 					do {
 						
-						printf("\nIntroduzca nueva hora (1-6)\n");
+						printf("\nIntroduzca nueva hora (1-6): ");
 						scanf("%d", &c);
 						
-					}while((c!=1)&&(c!=2)&&(c!=3)&&(c!=4)&&(c!=5)&&(c!=6));
+					}while((c<1)||(c>6));
 					
 					v_horarios[q].Hora_clase=c;
 					
 				} else {
 					
-					printf("ERROR: Algun parametro no se corresponde a un horarios existente\n");
+					printf("\nERROR: Algun parametro no se corresponde a un horario existente\n");
 				}				
-				
-				
-				goto HORARIOS;
+				break;
 				
 			case 3:
 				
@@ -1129,24 +1153,20 @@ void modificar_horarios (int nUsuarios, int nHorarios) {
 				
 				if (cond==1) {
 					
-					printf("Introduzca nuevo grupo (10 caracteres)\n");
+					printf("\nIntroduzca nuevo grupo (10 caracteres): ");
 					fflush(stdin);
 					fgets(cambio, 11, stdin);
-					v_horarios[q].Grupo=cambio;
+					strcpy(v_horarios[q].Grupo,cambio);
 					
 				} else {
 					
-					printf("ERROR: Algun parametro no se corresponde a un horarios existente\n");
+					printf("\nERROR: Algun parametro no se corresponde a un horario existente\n");
 				}					
-
-				
-				goto HORARIOS;		
+				break;		
 		}
 		
-	}while((n!=0)&&(n!=1)&&(n!=2)&&(n!=3));
-	
-	FIN:
-	
+	}while(op!=0);
+
 }
 
 int auxiliar_horarios (char id[4], int nHorarios, int *q) {
@@ -1154,19 +1174,19 @@ int auxiliar_horarios (char id[4], int nHorarios, int *q) {
 	char materia[5];
 	char grupo[11];
 	
-	printf("Introduzca materia (4 caracteres) y grupo (10 caracteres) para modificar el horario\n");
+	printf("\nIntroduzca materia (4 caracteres) y grupo (10 caracteres) para modificar el horario\n");
 	
-	printf("MATERIA:");
+	printf("\nMATERIA: ");
 	fflush(stdin);
 	fgets(materia, 5, stdin);
 	
-	printf("GRUPO: ");
+	printf("\nGRUPO: ");
 	fflush(stdin);
 	fgets(grupo, 11, stdin);
 	
 	for (i=0;i<nHorarios;i++) {
 		
-		if ((v_horarios[i].Id_profesor==id)&&(v_horarios[i].Grupo==grupo)&&(v_horarios[i].Id_materia==materia)) {
+		if ((strcmp(v_horarios[i].Id_profesor,id)==0)&&(strcmp(v_horarios[i].Grupo,grupo)==0)&&(strcmp(v_horarios[i].Id_materia,materia)==0)) {
 			*q=i;
 			return(1);
 		}
@@ -1183,114 +1203,121 @@ void agregar_horarios (int *nHorarios, int nUsuarios, int nMaterias, int nAlumno
 	char materia[5];
 	char grupo[11];
 	
-	ID:
-		
-	printf("Introduzca id (3 digitos) del profesor al que desea crear horario: ");
-	fflus(stdin),
-	fgets(id, 4, stdin);
-	
-	for (i=0;i<nUsuarios;i++) {
-		
-		if ((id==v_usuarios[i].Id_usuario)&&(v_usuarios[i].Perfil_usuario=='profesor')) {
-			break;
-		}
-	}
-	
-	if (i==nUsuarios) {
-		printf("\nERROR: El ID del profesor no existe\n");
-		printf("¿Desea intentarlo de nuevo? (1.Seguir)\n");
-		scanf("%d", &res);
-		
-		if (res==1) {
-			goto ID
-		} else {
-			goto FIN;
-		}
-	}
-	
-	CLASE:
-		
 	do {
 		
-		printf("Introduzca el dia (1-5) que tiene clase: ");
-		scanf("%d", &dia);
-		
-	}while((dia!=1)&&(dia!=2)&&(dia!=3)&&(dia!=4)&&(dia!=5));
-
-	do {
-		
-		printf("Introduzca la hora (1-6) a la que tiene clase: ");
-		scanf("%d", &hora);
-		
-	}while((hora!=1)&&(hora!=2)&&(hora!=3)&&(hora!=4)&&(hora!=5)&&(hora!=6));
-	
-	for (i=0;i<nHorarios;i++) { //Comprueba si ya tiene una clase el mismo dia y hora
-		
-		if ((dia==v_horarios[i].Dia_clase)&&(hora==v_horarios[i].Hora_clase)) {
-			printf("ERROR: Ya tiene una clase a esa hora el mismo dia\n");
-			printf("¿Desea volver a introducir hora? (1.Seguir)\n");
-			scanf("%d", &res);
+		printf("\nIntroduzca ID (3 digitos) del profesor al que desea crear horario: ");
+		fflus(stdin),
+		fgets(id, 4, stdin);		
 			
-			if (res==1) {
-				goto CLASE;
-			} else {
-				goto FIN;
+		for (i=0;i<nUsuarios;i++) {
+		
+			if ((strcmp(v_usuarios[i].Id_usuario,id)==0)&&(strcmp(v_usuarios[i].Perfil_usuario,'profesor')==0)) {
+				break;
+
 			}
 		}
-	}	
-	
-	MATERIA:
 		
-	printf("Introduzca el id (4 digitos) de la materia a la que va a dar clase: ");
-	fflush(stdin);
-	fgets(materia, 5, stdin);
-	
-	for (i=0;i<nMaterias;i++) {  //Comprueba si la materia existe
-		
-		if (materia==v_materias[i].Id_materias) {
-			break;
+		if (i==nUsuarios) {
+			
+			printf("\nERROR: El ID del profesor no existe\n");
+			printf("¿Desea volver a intentarlo? (1.Seguir)\n");
+			scanf("%d", &res);
+				
+			if (res!=1) {
+				return;
+			}						
+			
 		}
-	}
 	
-	if (i==nMaterias) {
+	} while(i==nUsuarios);
+	
+	do{
 		
-		printf("\nERROR: El ID de la materia no existe\n");
-		printf("¿Desea intentarlo de nuevo? (1.Seguir)\n");
-		scanf("%d", &res);
+		do {
 		
-		if (res==1) {
-			goto MATERIA;
-		} else {
-			goto FIN;
+			printf("\nIntroduzca el dia (1-5) que tiene clase: ");
+			scanf("%d", &dia);
+		
+		}while((dia<1)||(dia>5));
+
+		do {
+		
+			printf("\nIntroduzca la hora (1-6) a la que tiene clase: ");
+			scanf("%d", &hora);
+		
+		}while((hora<1)||(hora>6));
+	
+		for (i=0;i<nHorarios;i++) { //Comprueba si ya tiene una clase el mismo dia y hora
+		
+			if ((dia==v_horarios[i].Dia_clase)&&(hora==v_horarios[i].Hora_clase)) {
+				printf("\nERROR: Ya tiene una clase a esa hora el mismo dia\n");
+				printf("¿Desea volver a introducir hora? (1.Seguir)\n");
+				scanf("%d", &res);
+			
+				if (res!=1) {
+					return;
+				}
+				break;
+			}
 		}		
-	}
-	GRUPO:
 		
-	printf("Introduzca grupo (10 caracteres) al que va a dar clase\n");
-	fflus(stdin);
-	fgets(grupo, 11, stdin);
+	}while((dia==v_horarios[i].Dia_clase)&&(hora==v_horarios[i].Hora_clase));
 	
-	for (i=0;i<nAlumnos;i++) {  //Comprueba si el grupo existe
+	do {
 		
-		if (grupo==v_alumnos[i].Grupo) {
-			break;
+		printf("\nIntroduzca la ID MATERIA (4 digitos) a la que va a dar clase: ");
+		fflush(stdin);
+		fgets(materia, 5, stdin);		
+			
+		for (i=0;i<nMaterias;i++) {
+		
+			if (strcmp(materia,v_materias[i].Id_materias)==0) {
+				break;
+			}
 		}
-	}
-	
-	if (i==nAlumnos) {
 		
-		printf("ERROR: El grupo no existe\n");
-		printf("¿Desea volver a introducirlo?\n (1.Seguir)");
-		scanf("%d", &res);
-		
-		if (res==1) {
-			goto GRUPO;
-		}else{
-			goto FIN;
+		if (i==nMaterias) {
+			
+			printf("\nERROR: La ID MATERIA no existe\n");
+			printf("¿Desea volver a intentarlo? (1.Seguir)\n");
+			scanf("%d", &res);
+				
+			if (res!=1) {
+				return;
+			}						
+			
 		}
-	}	
 	
-	printf("¿Desea crear el horarios? (1.Confirmar)\n");
+	} while(i==nMaterias);
+			
+	do {
+		
+		printf("\nIntroduzca grupo (10 caracteres) al que va a dar clase: ");
+		fflush(stdin);
+		fgets(grupo, 11, stdin);		
+			
+		for (i=0;i<nAlumnos;i++) {
+		
+			if (strcmp(grupo,v_alumnos[i].Grupo)==0) {
+				break;
+			}
+		}
+		
+		if (i==nAlumnos) {
+			
+			printf("\nERROR: El grupo no existe\n");
+			printf("¿Desea volver a intentarlo? (1.Seguir)\n");
+			scanf("%d", &res);
+				
+			if (res!=1) {
+				return;
+			}						
+			
+		}
+	
+	} while(i==nAlumnos);
+	
+	printf("\n¿Desea crear el horarios? (1.Confirmar)\n");
 	scanf("%d", &res);
 	
 	if (res==1) {
@@ -1299,15 +1326,14 @@ void agregar_horarios (int *nHorarios, int nUsuarios, int nMaterias, int nAlumno
 		
 		*nHorarios = *nHorarios+1;
 		
-		v_horarios[nHorarios-1].Id_profesor=id;
-		v_horarios[nHorarios-1].Dia_clase=dis;
-		v_horarios[nHorarios-1].Hora_clase=hora;
-		v_horarios[nHorarios-1].Id_materia=materia;
-		v_horarios[nHorarios-1].Grupo=grupo;
+		strcpy(v_horarios[nHorarios-1].Id_profesor,id);
+		strcpy(v_horarios[nHorarios-1].Dia_clase,dia);
+		strcpy(v_horarios[nHorarios-1].Hora_clase,hora);
+		strcpy(v_horarios[nHorarios-1].Id_materia,materia);
+		strcpy(v_horarios[nHorarios-1].Grupo,grupo);
 		
 	}	
-	
-	FIN:
+
 }
 
 void eliminar_horarios (int *nHorarios, int nUsuarios) {
@@ -1315,84 +1341,74 @@ void eliminar_horarios (int *nHorarios, int nUsuarios) {
 	int i, res;
 	char id[4];
 	char grupo[11];
-	
-	ID:
 		
-	printf("Introduzca id (3 digitos) del profesor al que desea crear horario: ");
-	fflus(stdin),
-	fgets(id, 4, stdin);
-	
-	for (i=0;i<nUsuarios;i++) {
+	do{
 		
-		if ((id==v_usuarios[i].Id_usuario)&&(v_usuarios[i].Perfil_usuario=='profesor')) {
-			break;
+		printf("\nIntroduzca ID (3 digitos) del profesor al que desea eliminar horario: ");
+		fflush(stdin),
+		fgets(id, 4, stdin);
+	
+		for (i=0;i<nUsuarios;i++) {
+		
+			if ((strcmp(id,v_usuarios[i].Id_usuario))==0&&(strcmp(v_usuarios[i].Perfil_usuario,'profesor')==0)) {
+				break;
+			}
 		}
-	}
 	
-	if (i==nUsuarios) {
-		printf("\nERROR: El ID del profesor no existe\n");
-		printf("¿Desea intentarlo de nuevo? (1.Seguir)\n");
-		scanf("%d", &res);
+		if (i==nUsuarios) {
+			printf("\nERROR: ID de profesor no encontrado\n");
+			printf("¿Desea volver a introducirlo? (1.Seguir)\n");
+			scanf("%d", &res);
 		
-		if (res==1) {
-			goto ID
-		} else {
-			goto FIN;
+			if (res!=1) {
+				return;
+			}
+		}		
+		
+	}while(i==nUsuarios);
+	
+	do{
+		
+		printf("\nIntroduzca el grupo (10 caracteres) que va a eliminar del horario\n");
+		fflus(stdin);
+		fgets(grupo, 11, stdin);
+	
+		for (i=0;i<nHorarios;i++) {
+		
+			if ((strcmp(grupo,v_horarios[i].Grupo))==0&&(strcmp(v_horarios[i].Id_profesor,id)==0)) {
+				break;
+			}
 		}
-	}
 	
-	GRUPO:
+		if (i==nHorarios) {
+			
+			printf("\nERROR: El grupo no existe o no pertenece al profesor\n");
+			printf("¿Desea volver a introducirlo? (1.Seguir)\n");
+			scanf("%d", &res);
 		
-	printf("Introduzca el grupo (10 caracteres) que va a eliminar del horario\n");
-	fflus(stdin);
-	fgets(grupo, 11, stdin);
+			if (res!=1) {
+				return;
+			}
+		}		
+		
+	}while(i==nHorarios);	
 	
-	for (i=0;i<nHorarios;i++) {  //Comprueba si el grupo existe
-		
-		if ((grupo==v_horarios[i].Grupo)&&(v_horarios[i].Id_profesor==id)) {
-			break;
-		}
-	}
-	
-	if (i==nHorarios) {
-		
-		printf("ERROR: El grupo no existe o no pertenece al profesor\n");
-		printf("¿Desea volver a introducirlo?\n (1.Seguir)");
-		scanf("%d", &res);
-		
-		if (res==1) {
-			goto GRUPO;
-		}else{
-			goto FIN;
-		}
-	}	
-	
-	printf("¿Desea eliminar el horario del profesor? (1.Confirmar)\n");
+	printf("\n¿Desea eliminar el horario del profesor? (1.Confirmar)\n");
 	scanf("%d", &res);
 	
 	if (res==1) {
 		
 		for (i=i;i<(nHorarios-1);i++) {
 		
-			v_horarios[i].Id_profesor=v_horarios[i+1].Id_profesor;
-			v_horarios[i].Id_materia=v_horarios[i+1].Id_materia;
-			v_horarios[i].Grupo=v_horarios[i+1].Grupo;
-			v_horarios[i].Dia_clase=v_horarios[i+1].Dia_clase;
-			v_horarios[i].Hora_clase=v_horarios[i+1].Hora_clase;
+			strcpy(v_horarios[i].Id_profesor,v_horarios[i+1].Id_profesor);
+			strcpy(v_horarios[i].Id_materia,v_horarios[i+1].Id_materia);
+			strcpy(v_horarios[i].Grupo,v_horarios[i+1].Grupo);
+			strcpy(v_horarios[i].Dia_clase,v_horarios[i+1].Dia_clase);
+			strcpy(v_horarios[i].Hora_clase,v_horarios[i+1].Hora_clase);
 
 		}
 		
 		*nHorarios= *nHorarios-1;
 	}	
 	
-	FIN:			
-	
 }
-
-
-
-
-
-
-
-

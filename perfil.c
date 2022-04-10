@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "carga.h"
 #include "datos.h"
 #include "perfil.h"
+#include "admin.h"
+#include "profesor.h"
 
 void perfil (tipo,i_usuario) { //Tipo recibe 1 o 0 | i_usuario es el indice del usuario iniciado
 	
@@ -18,33 +21,29 @@ void perfil (tipo,i_usuario) { //Tipo recibe 1 o 0 | i_usuario es el indice del 
 	}
 }
 
-void menu_admin (i) {
+static void menu_admin (i) {
 	
 	int n, op;
 	
-	printf("Bienvenido %s ", v_usuarios[i].Nomb_usuario);
+	printf("\nBienvenido %s ", v_usuarios[i].Nomb_usuario);
 	printf("\nHas accedido como: ADMINISTRADOR");
-	
-	MENU:
 		
 	do {
 		
 		printf("\n\nMENU\n\n");
 	
-		printf("¿A que desea acceder?\n");
-	
 		printf("\t1.Usuarios\n");
 		printf("\t2.Alumnos\n");
 		printf("\t3.Materias\n");
 		printf("\t4.Horarios\n");
-		printf("\t5.Salir del programa\n");
+		printf("\t0.Salir del programa\n");
 		
 		scanf("%d", &n);
 			
 		switch (n) {
 		
 			case 1:
-				USUARIOS:
+
 				printf("\n\n\USUARIOS\n\n");
 				
 				do {
@@ -60,31 +59,31 @@ void menu_admin (i) {
 					switch (op) {
 						
 						case 0:
-							goto MENU; //goto salta a la linea marcada por la etiqueta
+							break;
 							
 						case 1:	
 							agregar_usuarios (&nUsuarios);
-							goto USUARIOS;
+							break;
 						
 						case 2:
 							eliminar_usuarios (&nUsuarios);
-							goto USUARIOS;
+							break;
 							
 						case 3:	
 							modificar_usuarios (nUsuarios);
-							goto USUARIOS;
+							break;
 						
 						case 4:
 							listar_usuarios (nUsuarios);
-							goto USUARIOS;
+							break;
 					}
 					
-				}while((n!=0)&&(n!=1)&&(n!=2)&&(n!=3)&&(n!=4));
+				}while(op!=0);
 				
 				break;
 				
 			case 2:
-				ALUMNOS:
+				
 				printf("\n\nALUMNOS\n\n");
 					
 				do {
@@ -100,31 +99,31 @@ void menu_admin (i) {
 					switch (op) {
 						
 						case 0:
-							goto MENU; //goto salta a la linea marcada por la etiqueta
+							break;
 							
 						case 1:	
 							agregar_alumnos (&nAlumnos);
-							goto ALUMNOS;
+							break;
 						
 						case 2:
 							eliminar_alumnos (&nAlumnos);
-							goto ALUMNOS;
+							break;
 								
 						case 3:	
 							modificar_alumnos (nAlumnos);
-							goto ALUMNOS;
+							break;
 						
 						case 4:
 							listar_alumnos (nAlumnos);
-							goto ALUMNOS;
+							break;
 					}
 					
-				}while((n!=0)&&(n!=1)&&(n!=2)&&(n!=3)&&(n!=4));
+				}while(op!=0);
 				
 				break;
 			
 			case 3:
-				MATERIAS:
+				
 				printf("\n\nMATERIAS\n\n");
 				do {
 	
@@ -139,31 +138,31 @@ void menu_admin (i) {
 					switch (op) {
 						
 						case 0:
-							goto MENU; //goto salta a la linea marcada por la etiqueta
+							break;
 							
 						case 1:	
 							agregar_materias (&nMaterias);
-							goto MATERIAS;
+							break;
 						
 						case 2:
 							eliminar_materias (&nMaterias);
-							goto MATERIAS;
-								
+							break;
+							
 						case 3:	
 							modificar_materias (nMaterias);
-							goto MATERIAS;
+							break;
 						
 						case 4:
 							listar_materias (nMaterias);
-							goto MATERIAS;
+							break;
 					}
 					
-				}while((n!=0)&&(n!=1)&&(n!=2)&&(n!=3)&&(n!=4));
+				}while(op!=0);
 				
 				break;
 				
 			case 4:
-				HORARIOS:
+				
 				printf("\n\nHORARIOS\n\n");
 				do {
 	
@@ -178,47 +177,117 @@ void menu_admin (i) {
 					switch (op) {
 						
 						case 0:
-							goto MENU; //goto salta a la linea marcada por la etiqueta
+							break;
 							
 						case 1:	
-							agregar_horarios (&nHorarios);
-							goto HORARIOS;
+							agregar_horarios (&nHorarios, nUsuarios, nMaterias, nAlumnos);
+							break;
 						
 						case 2:
-							eliminar_horarios (&nHorarios);
-							goto HORARIOS;
+							eliminar_horarios (&nHorarios, nUsuarios);
+							break;
 								
 						case 3:	
 							modificar_horarios (nUsuarios,nHorarios);
-							goto HORARIOS;
+							break;
 						
 						case 4:
 							listar_horarios (nUsuarios,nHorarios);
-							goto HORARIOS;
+							break;
 					}
 					
-				}while((n!=0)&&(n!=1)&&(n!=2)&&(n!=3)&&(n!=4));
+				}while(op!=0);
 				
 				break;
 				
-			case 5:
+			case 0:
 				break;		
 		}
 		
-	}while((n!=1)&&(n!=2)&&(n!=3)&&(n!=4)&&(n!=5));
+	}while(n!=0);
 				
 }
 
-void menu_profe (i) {
+static void menu_profe (i_profe) {
 	
-	int n, op;
+	int n, i, j, hora, dia, res;
+	char grupo[11];
 	
-	printf("Bienvenido %s ", v_usuarios[i].Nomb_usuario);
+	printf("\nBienvenido %s ", v_usuarios[i_profe].Nomb_usuario);
 	printf("\nHas accedido como: PROFESOR");
 	
+	do {
+		
+		list_hor_profe (i_profe, nHorarios);
+	
+		do {
+		
+			printf("\nIntroduzca el grupo con el que quiere trabajar: ");
+			fflush(stdin);
+			fgets(grupo, 11, stdin);
+		
+			printf("\nIntroduzca la hora (1-6) del grupo con el que quiere trabajar: ");
+			scanf("%d", &hora);
+		
+			printf("\nIntroduzca el dia (1-5) del grupo con el que quiere trabajar: ");
+			scanf("%d", &dia);				
+		
+			for (i=0;i<nHorarios;i++) {
+			
+				if ((strcmp(v_usuarios[i_profe].Id_usuario,v_horarios[i].Id_profesor)==0)&&(strcmp(v_horarios[i].Grupo,grupo)==0)&&(strcmp(v_horarios[i].Dia_clase,dia)==0)&&(strcmp(v_horarios[i].Dia_clase,dia)==0)){
+					
+					for (j=0;j<nMaterias;j++) {  //Busca indice (j) en v_materias (para poner la abreviatura mas adelante)
 				
+						if (strcmp(v_materias[j].Id_materias,v_horarios[i].Id_materia)==0) {
+							break;
+						}
+					}	
+					break;
+				}
+			}
+		
+			if (i==nHorarios) {
+				printf("\nERROR: Algun dato no se corresponde al grupo/profesor");
+				printf("\n¿Desea volver a intentarlo? (1.Seguir)\n");
+				scanf("%d", &res);
+			
+				if (res!=1) {
+					exit (1);
+				}
+			}
+		
+		
+		}while(i==nHorarios);
+	
+		printf("\n\nMENU\n\n");
+	
+		do {
+			
+			printf("GRUPO: %s  MATERIA: %s ", v_horarios[i].Grupo, v_materias[j].Abrev_materia);
+		
+			printf("\t1.Lista de alumnos\n");
+			printf("\t2.Cambiar de grupo\n");
+			printf("\t0.Salir del programa\n");
+		
+			scanf("%d", &n);
+		
+			switch (n) {
+			
+				case 0:
+					break;
+				
+				case 1:
+					gestor_alumnos (i,nAlumnos);
+					break;
+			
+				case 2:
+					break;
+					
+			}		
+		
+		
+		}while((n!=0)&&(n!=2));		
+		
+	}while(n!=0);
+		
 }
-
-
-
-
