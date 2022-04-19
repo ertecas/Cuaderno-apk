@@ -1,13 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "carga.h"
-#include "datos.h"
 #include "perfil.h"
-#include "admin.h"
-#include "profesor.h"
 
+
+//Postcondicion: Da acceso al menú de administrador o profesor 
 void perfil (tipo,i_usuario) { //Tipo recibe 1 o 0 | i_usuario es el indice del usuario iniciado
 	
 	if (tipo==1) {
@@ -21,6 +15,8 @@ void perfil (tipo,i_usuario) { //Tipo recibe 1 o 0 | i_usuario es el indice del 
 	}
 }
 
+
+//Postcondición: Muestra el menú de administrador
 static void menu_admin (i) {
 	
 	int n, op;
@@ -30,31 +26,31 @@ static void menu_admin (i) {
 		
 	do {
 		
-		printf("\n\nMENU\n\n");
+		printf("\n\n\tMENU\n");
 	
-		printf("\t1.Usuarios\n");
+		printf("\n\t1.Usuarios\n");
 		printf("\t2.Alumnos\n");
 		printf("\t3.Materias\n");
 		printf("\t4.Horarios\n");
 		printf("\t0.Salir del programa\n");
 		
-		scanf("%d", &n);
+		scanf("\t%d", &n);
 			
 		switch (n) {
 		
 			case 1:
 
-				printf("\n\n\USUARIOS\n\n");
+				printf("\n\n\tUSUARIOS\n");
 				
 				do {
 		
-					printf("\t1.Agregar usuarios\n");
+					printf("\n\t1.Agregar usuarios\n");
 					printf("\t2.Eliminar usuarios\n");
 					printf("\t3.Modificar usuarios\n");
 					printf("\t4.Listar usuarios\n");		
 					printf("\t0.Volver al menu de administrador\n");
 				
-					scanf("%d", &op);
+					scanf("\t%d", &op);
 					
 					switch (op) {
 						
@@ -84,17 +80,17 @@ static void menu_admin (i) {
 				
 			case 2:
 				
-				printf("\n\nALUMNOS\n\n");
+				printf("\n\n\tALUMNOS\n");
 					
 				do {
 	
-					printf("\t1.Agregar alumnos\n");
+					printf("\n\t1.Agregar alumnos\n");
 					printf("\t2.Eliminar alumnos\n");
 					printf("\t3.Modificar alumnos\n");
 					printf("\t4.Listar alumnos\n");		
 					printf("\t0.Volver al menu de administrador\n");
 				
-					scanf("%d", &op);
+					scanf("\t%d", &op);
 					
 					switch (op) {
 						
@@ -124,16 +120,16 @@ static void menu_admin (i) {
 			
 			case 3:
 				
-				printf("\n\nMATERIAS\n\n");
+				printf("\n\n\tMATERIAS\n");
 				do {
 	
-					printf("\t1.Agregar materias\n");
+					printf("\n\t1.Agregar materias\n");
 					printf("\t2.Eliminar materias\n");
 					printf("\t3.Modificar materias\n");
 					printf("\t4.Listar materias\n");		
 					printf("\t0.Volver al menu de administrador\n");
 				
-					scanf("%d", &op);
+					scanf("\t%d", &op);
 					
 					switch (op) {
 						
@@ -163,16 +159,16 @@ static void menu_admin (i) {
 				
 			case 4:
 				
-				printf("\n\nHORARIOS\n\n");
+				printf("\n\n\tHORARIOS\n");
 				do {
 	
-					printf("\t1.Agregar hora a un profesor\n");
+					printf("\n\t1.Agregar hora a un profesor\n");
 					printf("\t2.Eliminar hora de un profesor\n");
 					printf("\t3.Modificar hora de un profesor\n");
 					printf("\t4.Listar horario de un profesor\n");		
 					printf("\t0.Volver al menu de administrador\n");
 				
-					scanf("%d", &op);
+					scanf("\t%d", &op);
 					
 					switch (op) {
 						
@@ -208,37 +204,38 @@ static void menu_admin (i) {
 				
 }
 
+//Postcondición: Muestra el menú de profesor
 static void menu_profe (i_profe) {
 	
-	int n, i, j, hora, dia, res;
+	int n, i, j, hora, dia;
+	char res[3];
 	char grupo[11];
+	char abrev[4];
 	
 	printf("\nBienvenido %s ", v_usuarios[i_profe].Nomb_usuario);
-	printf("\nHas accedido como: PROFESOR");
+	printf("\nHas accedido como: PROFESOR\n");
 	
 	do {
 		
-		list_hor_profe (i_profe, nHorarios);
+		list_hor_profe (i_profe, nHorarios, nMaterias);
 	
 		do {
 		
 			printf("\nIntroduzca el grupo con el que quiere trabajar: ");
 			fflush(stdin);
 			fgets(grupo, 11, stdin);
-		
-			printf("\nIntroduzca la hora (1-6) del grupo con el que quiere trabajar: ");
-			scanf("%d", &hora);
-		
-			printf("\nIntroduzca el dia (1-5) del grupo con el que quiere trabajar: ");
-			scanf("%d", &dia);				
-		
-			for (i=0;i<nHorarios;i++) {
-			
-				if ((strcmp(v_usuarios[i_profe].Id_usuario,v_horarios[i].Id_profesor)==0)&&(strcmp(v_horarios[i].Grupo,grupo)==0)&&(strcmp(v_horarios[i].Dia_clase,dia)==0)&&(strcmp(v_horarios[i].Dia_clase,dia)==0)){
-					
-					for (j=0;j<nMaterias;j++) {  //Busca indice (j) en v_materias (para poner la abreviatura mas adelante)
+	
+			printf("\nIntroduzca la abreviatura de la materia con la que quiere trabajar: ");
+			fflush(stdin);
+			fgets(abrev, 4, stdin);			
 				
-						if (strcmp(v_materias[j].Id_materias,v_horarios[i].Id_materia)==0) {
+			for (i=0;i<nHorarios;i++) {
+
+				if ((strcmp(v_usuarios[i_profe].Id_usuario,v_horarios[i].Id_profesor)==0)&&(strcmp(v_horarios[i].Grupo,grupo)==0)){
+					
+					for (j=0;j<nMaterias;j++) { 
+									
+						if (strcmp(v_materias[j].Abrev_materia,abrev)==0) {
 							break;
 						}
 					}	
@@ -246,26 +243,27 @@ static void menu_profe (i_profe) {
 				}
 			}
 		
-			if (i==nHorarios) {
+			if ((i==nHorarios)||(j==nMaterias)) {
 				printf("\nERROR: Algun dato no se corresponde al grupo/profesor");
-				printf("\n¿Desea volver a intentarlo? (1.Seguir)\n");
-				scanf("%d", &res);
+				printf("\n¿Desea volver a intentarlo? (Introduzca 'Si' para reintentar)\n");
+				fflush(stdin);
+				fgets(res, 3, stdin);
 			
-				if (res!=1) {
+				if ((strcmp(res,"si")!=0)&&(strcmp(res,"SI")!=0)&&(strcmp(res,"Si")!=0)&&(strcmp(res,"sI")!=0)) {
 					exit (1);
 				}
 			}
 		
 		
-		}while(i==nHorarios);
+		}while((i==nHorarios)||(j==nMaterias));
 	
-		printf("\n\nMENU\n\n");
+		printf("\n\n\tMENU\n");
 	
 		do {
 			
-			printf("GRUPO: %s  MATERIA: %s ", v_horarios[i].Grupo, v_materias[j].Abrev_materia);
+			printf("\n\tGRUPO: %s  MATERIA: %s ", grupo, abrev);
 		
-			printf("\t1.Lista de alumnos\n");
+			printf("\n\t1.Lista de alumnos\n");
 			printf("\t2.Cambiar de grupo\n");
 			printf("\t0.Salir del programa\n");
 		

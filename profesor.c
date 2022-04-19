@@ -1,17 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "profesor.h"
 
-#include "datos.h"
-#include "carga.h"
-#include "admin.h"
-
-void list_hor_profe (int i_profe, int nHorarios) {
+//Postcondición: Lista el horarios del profesor 
+void list_hor_profe (int i_profe, int nHorarios, int nMaterias) {
 	
 	int i, j;
 	
-	printf("\nHORARIO: ");
-	printf("\nDIA-HORA-MATERIA-GRUPO\n");
+	printf("\n\tHORARIO: ");
+	printf("\n\tDIA-HORA-MATERIA-GRUPO\n");
 	
 	for (i=0;i<nHorarios;i++) {
 		
@@ -20,25 +15,26 @@ void list_hor_profe (int i_profe, int nHorarios) {
 			for (j=0;j<nMaterias;j++) {
 				
 				if (strcmp(v_materias[j].Id_materias, v_horarios[i].Id_materia)==0) {
-					break;
+					printf("\t%d-%d-%s-%s\n", v_horarios[i].Dia_clase, v_horarios[i].Hora_clase, v_materias[j].Abrev_materia, v_horarios[i].Grupo);
 				}
 			}
 			
-			printf("%d-%d-%s-%s\n", v_horarios[i].Dia_clase, v_horarios[i].Hora_clase, v_materias[j].Abrev_materia, v_horarios[i].Grupo);
 		}
 	}	
 	
 }
 
+//Postcondición: Lista todos los alumnos del grupo recibido y permite elegir con el que quiere trabajar
 void gestor_alumnos (int i_grupo, int nAlumnos) {
 	
-	int i, res, op;
+	int i, op;
+	char res[3];
 	char id[7];
 	
 	do {
 		
 		for (i=0;i<nAlumnos;i++) { //Lista los alumnos del grupo
-		
+
 			if (strcmp(v_alumnos[i].Grupo, v_horarios[i_grupo].Grupo)==0) {
 				printf("\nAlumno:%s ID:%s", v_alumnos[i].Nombre_alum, v_alumnos[i].Id_alum);
 			}
@@ -49,30 +45,36 @@ void gestor_alumnos (int i_grupo, int nAlumnos) {
 			printf("\nIntroduzca el ID del alumno con el que desee trabajar: ");
 			fflush(stdin),
 			fgets(id, 7, stdin);
-	
-			if (strcmp(v_alumnos[i].Id_alum,id)!=0) {
+			
+			for (i=0;i<nAlumnos;i++) {
+				
+				if (strcmp(v_alumnos[i].Id_alum,id)==0) {
+					break;
+				}
+			}
+			
+			if (i==nAlumnos) {
 			
 				printf("\nERROR: El ID no se corresponde con ningun alumno\n");
-				printf("¿Desea volver a intentarlo? (1.Seguir)\n");
-				scanf("%d", &res);
+				printf("¿Desea volver a intentarlo? (Introduzca 'Si' para reintentar)\n");
+				fflush(stdin);
+				fgets(res, 3, stdin);
 				
-				if (res!=1) {
+				if ((strcmp(res,"si")!=0)&&(strcmp(res,"SI")!=0)&&(strcmp(res,"Si")!=0)&&(strcmp(res,"sI")!=0)) {
 					return;
 				}
 		
 			}			
 			
-		}while(strcmp(v_alumnos[i].Id_alum,id)!=0);
+		}while(i==nAlumnos);
 		
 	
 		do{
 			
-			printf("\t1.Ficha del alumno\n");
+			printf("\n\t1.Ficha del alumno\n");
 			printf("\t2.Calificaciones\n");
 			printf("\t0.Volver al menu de seleccion de alumno\n");
 			printf("\t3.Volver al menu de seleccion de grupo\n");
-		
-			scanf("%d", &op);
 		
 			switch (op) {
 			
@@ -84,7 +86,7 @@ void gestor_alumnos (int i_grupo, int nAlumnos) {
 					break;
 				
 				case 2:
-					calificaciones (id, i_grupo, nAlumnos, nCalificaciones);
+					menu_calificaciones (id, i_grupo, nAlumnos, nCalificaciones);
 					break;
 					
 				case 3:
@@ -98,9 +100,12 @@ void gestor_alumnos (int i_grupo, int nAlumnos) {
 	
 }
 
+
+//Postcondición: Permite modificar la información personal del alumno
 void ficha_alumno (char id[], int nAlumnos) {
 	
-	int i, op;
+	int i, op, j;
+	char res[3];
 	char cambio[31];
 	
 	for (i=0;i<nAlumnos;i++) {
@@ -112,8 +117,8 @@ void ficha_alumno (char id[], int nAlumnos) {
 		
 	do {
 			
-		printf("\nID-NOMBRE-DIRECCION-LOCALIDAD-CURSO-GRUPO\n");
-		printf("%s-%s-%s-%s-%s-%s\n",v_alumnos[i].Id_alum,v_alumnos[i].Nombre_alum,v_alumnos[i].Direc_alum,v_alumnos[i].Local_alum,v_alumnos[i].Curso,v_alumnos[i].Grupo);
+		printf("\n\tID-NOMBRE-DIRECCION-LOCALIDAD-CURSO-GRUPO\n");
+		printf("\t%s-%s-%s-%s-%s-%s\n",v_alumnos[i].Id_alum,v_alumnos[i].Nombre_alum,v_alumnos[i].Direc_alum,v_alumnos[i].Local_alum,v_alumnos[i].Curso,v_alumnos[i].Grupo);
 			
 		printf("\t1.ID\n");
 		printf("\t2.NOMBRE\n");
@@ -131,10 +136,31 @@ void ficha_alumno (char id[], int nAlumnos) {
 				break;
 						
 			case 1:	
+			
+				do {
 					
-				printf("\nIntroduzca nuevo ID: ");
-				fflush(stdin);
-				fgets(cambio, 7, stdin);
+					printf("\nIntroduzca nuevo ID: ");
+					fflush(stdin);
+					fgets(cambio, 7, stdin);
+					
+					for (j=0;j<nAlumnos;j++) {
+						
+						if (strcmp(v_alumnos[j].Id_alum,cambio)==0) {
+							
+							printf("\nERROR: ID en uso");
+							printf("\n¿Desea volver a intentarlo? (Introduzca 'Si' para reintentar)");
+							fflush(stdin);
+							fgets(res, 3, stdin);
+							
+							if ((strcmp(res,"si")!=0)&&(strcmp(res,"SI")!=0)&&(strcmp(res,"Si")!=0)&&(strcmp(res,"sI")!=0)) {
+								return;
+							}
+							break;
+						}
+					}
+									
+					
+				}while(strcmp(v_alumnos[j].Id_alum,cambio)==0);	
 				strcpy(v_alumnos[i].Id_alum,cambio);
 				break;
 						
@@ -180,13 +206,14 @@ void ficha_alumno (char id[], int nAlumnos) {
 	
 }
 
-void calificaciones (char id[], int i_grupo, int nAlumnos, int nCalificaciones) {
+//Postcondición: Accede al menú de calificaciones de alumno
+void menu_calificaciones (char id[], int i_grupo, int nAlumnos, int nCalificaciones) {
 	
 	int op;
 	
 	do {
 		
-		printf("\n\nCALIFICACIONES\n\n");
+		printf("\n\n\tCALIFICACIONES\n\n");
 		
 		printf("\t1.Agregar calificaciones\n");
 		printf("\t2.Eliminar calificaciones\n");
@@ -223,26 +250,30 @@ void calificaciones (char id[], int i_grupo, int nAlumnos, int nCalificaciones) 
 	
 }
 
+
+//Postcondición: Lista las calificaciones del alumno
 void listar_calificaciones (char id[], int i_grupo, int nCalificaciones) {
 	
 	int i;
 	
-	printf("\nCALIFICACIONES: ");
+	printf("\n\tCALIFICACIONES: ");
 		
 	for (i=0;i<nCalificaciones;i++) {
 			
 		if ((strcmp(v_calificaciones[i].Id_materia,v_horarios[i_grupo].Id_materia)==0)&&(strcmp(v_calificaciones[i].Id_alum,id)==0)) {
 				
-			printf("\nFECHA-DESCRIPCION-ID MATERIA-ID ALUMNO-CALIFICACION\n");
-			printf("%s-%s-%s-%s-%d\n", v_calificaciones[i].Fecha_calif, v_calificaciones[i].Descrip_calif, v_calificaciones[i].Id_materia, v_calificaciones[i].Id_alum, v_calificaciones[i].Valor_calif);
+			printf("\n\tFECHA-DESCRIPCION-ID MATERIA-ID ALUMNO-CALIFICACION\n");
+			printf("\t%s-%s-%s-%s-%s\n", v_calificaciones[i].Fecha_calif, v_calificaciones[i].Descrip_calif, v_calificaciones[i].Id_materia, v_calificaciones[i].Id_alum, v_calificaciones[i].Valor_calif);
 		}
 	}	
 	
 }
 
+//Postcondición: Permite modificar las calificaciones del alumno
 void modificar_calificaciones (char id[], int i_grupo, int nCalificaciones) {
 	
-	int i, op, res, c;
+	int i, op;
+	char res[3];
 	char cambio[31];
 	char descripcion[31];
 	
@@ -252,8 +283,8 @@ void modificar_calificaciones (char id[], int i_grupo, int nCalificaciones) {
 		
 			if ((strcmp(v_calificaciones[i].Id_materia,v_horarios[i_grupo].Id_materia)==0)&&(strcmp(v_calificaciones[i].Id_alum,id)==0)) {
 			
-				printf("\nFECHA-DESCRIPCION-ID MATERIA-ID ALUMNO-CALIFICACION\n");
-				printf("%s-%s-%s-%s-%d\n", v_calificaciones[i].Fecha_calif, v_calificaciones[i].Descrip_calif, v_calificaciones[i].Id_materia, v_calificaciones[i].Id_alum, v_calificaciones[i].Valor_calif);
+				printf("\n\tFECHA-DESCRIPCION-ID MATERIA-ID ALUMNO-CALIFICACION\n");
+				printf("\t%s-%s-%s-%s-%d\n", v_calificaciones[i].Fecha_calif, v_calificaciones[i].Descrip_calif, v_calificaciones[i].Id_materia, v_calificaciones[i].Id_alum, v_calificaciones[i].Valor_calif);
 			}
 		}
 		
@@ -273,11 +304,11 @@ void modificar_calificaciones (char id[], int i_grupo, int nCalificaciones) {
 			if (i==nCalificaciones) {
 				
 				printf("\nERROR: DESCRIPCION no encontrada\n");
-				printf("¿Desea volver a intentarlo? (1.Seguir)\n");
+				printf("¿Desea volver a intentarlo? (Introduzca 'Si' para reintentar)\n");
+				fflush(stdin);
+				fgets(res, 3, stdin);
 				
-				scanf("%d", &res);
-				
-				if (res!=1) {
+				if ((strcmp(res,"si")!=0)&&(strcmp(res,"SI")!=0)&&(strcmp(res,"Si")!=0)&&(strcmp(res,"sI")!=0)) {
 					return;
 				}
 			}
@@ -316,10 +347,12 @@ void modificar_calificaciones (char id[], int i_grupo, int nCalificaciones) {
 				case 3:
 					do {
 						printf("\nIntroduzca nueva calificacion (0-10): ");
-						scanf("%d", &c);							
-					}while((c<0)||(c>10));
+						fflush(stdin);
+						fgets(cambio, 2, stdin);
+													
+					}while((strcmp(cambio,"0")!=0)&&(strcmp(cambio,"1")!=0)&&(strcmp(cambio,"2")!=0)&&(strcmp(cambio,"3")!=0)&&(strcmp(cambio,"4")!=0)&&(strcmp(cambio,"5")!=0)&&(strcmp(cambio,"6")!=0)&&(strcmp(cambio,"7")!=0)&&(strcmp(cambio,"8")!=0)&&(strcmp(cambio,"9")!=0)&&(strcmp(cambio,"10")!=0));
 
-					v_calificaciones[i].Valor_calif=c;
+					strcpy(v_calificaciones[i].Valor_calif, cambio);
 					break;		
 			}
 			
@@ -330,53 +363,61 @@ void modificar_calificaciones (char id[], int i_grupo, int nCalificaciones) {
 
 }
 
+
+//POstcondición: Permite añadir nuevas calificaciones a un alumno
 void agregar_calificaciones (char id[], int i_grupo, int *nCalificaciones) {
 	
+	char res[3];
 	char fecha[11];
 	char descripcion[31];
-	int nota, res;
+	char nota[2];
 	
 	printf("\nIntroduzca la FECHA de la calificacion (xx/yy/zzzz):");
 	fflush(stdin);
 	fgets(fecha, 11, stdin);
 	
-	printf("\nIntroduzca la DESCRIPCION (31 caracteres): ");
+	printf("\nIntroduzca la DESCRIPCION (30 caracteres maximo): ");
 	fflush(stdin),
 	fgets(descripcion, 31, stdin);
 	
 	do {
 		
 		printf("\nIntroduzca la CALIFICACION (0-10): ");
-		scanf("%d", &nota);
+		fflush(stdin);
+		fgets(nota, 2, stdin);
 		
-		if((nota<0)||(nota>10)) {
+		if((strcmp(nota,"0")!=0)&&(strcmp(nota,"1")!=0)&&(strcmp(nota,"2")!=0)&&(strcmp(nota,"3")!=0)&&(strcmp(nota,"4")!=0)&&(strcmp(nota,"5")!=0)&&(strcmp(nota,"6")!=0)&&(strcmp(nota,"7")!=0)&&(strcmp(nota,"8")!=0)&&(strcmp(nota,"9")!=0)&&(strcmp(nota,"10")!=0)) {
 			printf("\nERROR: La nota debe estar comprendida entre 0 y 10");
 		}
 		
-	}while((nota<0)||(nota>10));
+	}while((strcmp(nota,"0")!=0)&&(strcmp(nota,"1")!=0)&&(strcmp(nota,"2")!=0)&&(strcmp(nota,"3")!=0)&&(strcmp(nota,"4")!=0)&&(strcmp(nota,"5")!=0)&&(strcmp(nota,"6")!=0)&&(strcmp(nota,"7")!=0)&&(strcmp(nota,"8")!=0)&&(strcmp(nota,"9")!=0)&&(strcmp(nota,"10")!=0));
 	
-	printf("\n¿Desea crear la calificacion? (1.Confirmar)\n");
-	scanf("%d", &res);
+	printf("\n¿Desea crear la calificacion? (Introduzca 'Si' para confirmar)\n");
+	fflush(stdin);
+	fgets(res, 3, stdin);
 	
-	if (res==1) {
+	if ((strcmp(res,"si")==0)||(strcmp(res,"SI")==0)||(strcmp(res,"Si")==0)||(strcmp(res,"sI")==0)) {
 		
-		v_calificaciones= (calificaciones*) realloc(v_calificaciones,(nCalificaciones+1)*sizeof(calificaciones); //Añadimos un hueco más al vector
+		v_calificaciones= (calificaciones*) realloc(v_calificaciones,((*nCalificaciones)+1)*sizeof(calificaciones)); //Añadimos un hueco más al vector
 		
 		*nCalificaciones= *nCalificaciones+1;
 		
-		strcpy(v_calificaciones[nCalificaciones-1].Fecha_calif, fecha);
-		strcpy(v_calificaciones[nCalificaciones-1].Descrip_calif, descripcion);
-		strcpy(v_calificaciones[nCalificaciones-1].Id_materia, v_horarios[i_grupo].Id_materia);
-		strcpy(v_calificaciones[nCalificaciones-1].Id_alum, id);
-		v_calificaciones[nCalificaciones-1].Valor_calif=nota;
+		strcpy(v_calificaciones[(*nCalificaciones)-1].Fecha_calif, fecha);
+		strcpy(v_calificaciones[(*nCalificaciones)-1].Descrip_calif, descripcion);
+		strcpy(v_calificaciones[(*nCalificaciones)-1].Id_materia, v_horarios[i_grupo].Id_materia);
+		strcpy(v_calificaciones[(*nCalificaciones)-1].Id_alum, id);
+		strcpy(v_calificaciones[(*nCalificaciones)-1].Valor_calif,nota);
 	}
 	
 	
 }
 
+
+//Postcondición: Permite eliminar una calificación de un alumno
 void eliminar_calificaciones (int *nCalificaciones) {
 	
-	int i, res;
+	int i;
+	char res[3];
 	char descripcion[31];
 	
 	do {
@@ -385,38 +426,40 @@ void eliminar_calificaciones (int *nCalificaciones) {
 		fflush(stdin);
 		fgets(descripcion, 31, stdin);
 	
-		for (i=0;i<nCalificaciones;i++) {
+		for (i=0;i<(*nCalificaciones);i++) {
 		
 			if(strcmp(v_calificaciones[i].Descrip_calif,descripcion)==0) {
 				break;
 			}
 		}
 		
-		if(i==nCalificaciones) {
+		if(i==(*nCalificaciones)) {
 			
 			printf("\nERROR: La DESCRIPCION introducida no existe\n");
-			printf("¿Desea volver a introducirla? (1.Seguir)\n");
-			scanf("%d", &res);
+			printf("¿Desea volver a introducirla? (Introduzca 'Si' para reintentar)\n");
+			fflush(stdin);
+			fgets(res, 3, stdin);
 			
-			if (res!=1) {
+			if ((strcmp(res,"si")!=0)&&(strcmp(res,"SI")!=0)&&(strcmp(res,"Si")!=0)&&(strcmp(res,"sI")!=0)) {
 				return;
 			}
 		}
 		
-	}while(i==nCalificaciones);
+	}while(i==(*nCalificaciones));
 	
-	printf("\n¿Desea eliminar la calificacion? (1.Confirmar)\n");
-	scanf("%d", &res);
+	printf("\n¿Desea eliminar la calificacion? (Introduzca 'Si' para confirmar)\n");
+	fflush(stdin);
+	fgets(res, 3, stdin);
 	
-	if (res==1) {
+	if ((strcmp(res,"si")==0)||(strcmp(res,"SI")==0)||(strcmp(res,"Si")==0)||(strcmp(res,"sI")==0)) {
 		
-		for (i=i;i<(nCalificaciones-1);i++) {
+		for (i=i;i<(*nCalificaciones-1);i++) {
 			
-			strcpy(v_calificaciones[i].Fecha_calif, v_calificaciones[i+1].Fecha_calif)
-			strcpy(v_calificaciones[i].Descrip_calif, v_calificaciones[i+1].Descrip_calif)
-			strcpy(v_calificaciones[i].Id_materia, v_calificaciones[i+1].Id_materia)
-			strcpy(v_calificaciones[i].Id_alum, v_calificaciones[i+1].Id_alum)
-			v_calificaciones[i].Valor_calif=v_calificaciones[i+1].Valor_calif;
+			strcpy(v_calificaciones[i].Fecha_calif, v_calificaciones[i+1].Fecha_calif);
+			strcpy(v_calificaciones[i].Descrip_calif, v_calificaciones[i+1].Descrip_calif);
+			strcpy(v_calificaciones[i].Id_materia, v_calificaciones[i+1].Id_materia);
+			strcpy(v_calificaciones[i].Id_alum, v_calificaciones[i+1].Id_alum);
+			strcpy(v_calificaciones[i].Valor_calif,v_calificaciones[i+1].Valor_calif);
 		}
 		
 		*nCalificaciones= *nCalificaciones-1;		

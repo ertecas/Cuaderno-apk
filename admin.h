@@ -1,6 +1,9 @@
 #ifndef _ADMIN_
 #define _ADMIN_
 
+#include "datos.h"
+#include "carga.h"
+
 void listar_usuarios (int nUsuarios);
 void modificar_usuarios (int nUsuarios);
 void agregar_usuarios (int *nUsuarios);
@@ -26,7 +29,7 @@ void eliminar_materias (int *nMaterias);
 void listar_horarios (int nUsuarios, int nHorarios);
 void modificar_horarios (int nUsuarios, int nHorarios);
 //Postcondición: La función devuelve 0 o 1, depende de si los datos recibidos se corresponden a algun i_elemento del vector
-int auxiliar_horarios (char [], int nHorarios, int *q);
+int auxiliar_horarios (char [4], int nHorarios, int *q);
 void agregar_horarios (int *nHorarios, int nUsuarios, int nMaterias, int nAlumnos);
 void eliminar_horarios (int *nHorarios, int nUsuarios);
 
